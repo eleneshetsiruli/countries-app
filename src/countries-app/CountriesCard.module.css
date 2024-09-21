@@ -1,0 +1,58 @@
+.container {
+  display: flex;
+  gap: 20px;
+  height: 100vh;
+  justify-content: center;
+  align-items: center;
+}
+
+.singleCard {
+  width: 300px;
+  height: 300px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-radius: 20px;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  gap: 15px;
+  background-color: white;
+}
+
+.singleCard h1 {
+  color: rgb(90, 11, 11);
+}
+
+.singleCard span {
+  color: rgb(131, 150, 172);
+  font-weight: 600;
+}
+
+.populationNumberBox {
+  display: flex;
+  gap: 8px;
+}
+
+.singleCard img {
+  width: 200px;
+}
+
+/* media query */
+/* for tablet */
+@media only screen and (min-width: 768px) and (max-width: 1024px) {
+  .container {
+    flex-wrap: wrap;
+  }
+  .singleCard {
+    width: 200px;
+    height: 270px;
+  }
+}
+
+/* for mobile */
+@media only screen and (max-width: 767px) {
+  .container {
+    flex-direction: column;
+    margin-top: 250px;
+  }
+}

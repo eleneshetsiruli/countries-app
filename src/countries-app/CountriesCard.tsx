@@ -1,4 +1,5 @@
-import countriesData from "./countries-app/countries.ts";
+import countriesData from "./countries.ts";
+import styles from "./CountriesCard.module.css";
 
 interface CountryData {
   name: string;
@@ -14,7 +15,7 @@ const typedCountriesData: CountryData[] = countriesData;
 
 export const CountriesCard = () => {
   return (
-    <div className="container">
+    <div className={styles.container}>
       {typedCountriesData.map((element, i) => (
         <Country data={element} key={i} />
       ))}
@@ -29,15 +30,14 @@ const Country: React.FC<CountryProps> = ({ data }) => {
   );
 
   return (
-    <div className="single-card">
+    <div className={styles.singleCard}>
       <h1>{data.name}</h1>
       <img src={data.flag} alt="flagImg" />
-      <div className="more-info">
-        <div className="population-number-box">
+      <div>
+        <div className={styles.populationNumberBox}>
           <span>Population:</span>
           <span>{formattedPopulation}</span>
         </div>
-
         <p>
           <span>Capital:</span>
           <small> {data.capital}</small>

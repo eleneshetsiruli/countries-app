@@ -1,8 +1,8 @@
 import "./App.css";
-
-import { CountriesCard } from "./CountriesCard.js";
-import { Header } from "./Header.js";
-import { HeroSection } from "./HeroSection.js";
+import { Footer } from "./footer-component/Footer.js";
+import { CountriesCard } from "./countries-app/CountriesCard.js";
+import { Header } from "./header-component/Header.js";
+import { HeroSection } from "./hero-component/HeroSection.js";
 
 function App() {
   return (
@@ -10,6 +10,7 @@ function App() {
       <Header />
       <HeroSection />
       <CountriesCard />
+      <Footer />
     </>
   );
 }
