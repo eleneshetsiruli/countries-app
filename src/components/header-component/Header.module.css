@@ -13,6 +13,15 @@
   font-family: "Protest Guerrilla", sans-serif;
 }
 
+.header a {
+  text-decoration: none;
+  color: gray;
+}
+
+.header a:hover {
+  border-bottom: 2px solid rgb(90, 11, 11);
+}
+
 .header h1:hover {
   color: gray;
   cursor: pointer;
