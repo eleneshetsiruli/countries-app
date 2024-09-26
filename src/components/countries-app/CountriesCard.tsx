@@ -1,4 +1,11 @@
-import countriesData from "./countries.ts";
+import {
+  CardContent,
+  CardDetails,
+  CardImg,
+  CardTitle,
+  SingleCard,
+} from "./card-components/";
+import countriesData from "./countries-data/countries.ts";
 import styles from "./CountriesCard.module.css";
 
 interface CountryData {
@@ -30,19 +37,14 @@ const Country: React.FC<CountryProps> = ({ data }) => {
   );
 
   return (
-    <div className={styles.singleCard}>
-      <h1>{data.name}</h1>
-      <img src={data.flag} alt="flagImg" />
-      <div>
-        <div className={styles.populationNumberBox}>
-          <span>Population:</span>
-          <span>{formattedPopulation}</span>
-        </div>
-        <p>
-          <span>Capital:</span>
-          <small> {data.capital}</small>
-        </p>
-      </div>
-    </div>
+    <SingleCard
+      renderTitle={<CardTitle title={data.name} />}
+      renderImg={<CardImg img={data.flag} />}
+    >
+      <CardContent>
+        <CardDetails label="population:" population={formattedPopulation} />
+        <CardDetails label="Capital" population={data.capital} />
+      </CardContent>
+    </SingleCard>
   );
 };

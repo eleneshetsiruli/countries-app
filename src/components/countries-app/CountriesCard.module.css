@@ -28,9 +28,17 @@
   font-weight: 600;
 }
 
+.cardContentBox {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
 .populationNumberBox {
   display: flex;
-  gap: 8px;
+  gap: 10px;
+  width: 200px;
+  justify-content: space-between;
 }
 
 .singleCard img {
