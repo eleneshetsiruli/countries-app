@@ -18,9 +18,6 @@ export const Header = () => {
       <NavLink className={handleActiveNav} to={"maps"}>
         Maps
       </NavLink>
-      <NavLink className={handleActiveNav} to={"/"}>
-        References
-      </NavLink>
     </div>
   );
 };
