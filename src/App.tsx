@@ -6,6 +6,7 @@ import CardView from "./pages/home/views/list";
 
 const LazyAboutView = lazy(() => import("./pages/about/views"));
 const LazyMapPageView = lazy(() => import("./pages/maps/views"));
+const LazyPageNotFoundView = lazy(() => import("./pages/404"));
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
             <Route path="about" element={<LazyAboutView />} />
             <Route path="maps" element={<LazyMapPageView />} />
           </Route>
+          <Route path="*" element={<LazyPageNotFoundView />} />
         </Routes>
       </Suspense>
     </>
