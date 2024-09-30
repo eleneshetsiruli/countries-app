@@ -1,17 +1,25 @@
 import "./App.css";
-import { CountriesCard } from "#/countries-app/CountriesCard.js";
-import { HeroSection } from "#/hero-component/HeroSection.js";
-import { DashboardLayout } from "@/layout/DashboardLayout.js";
+import { Route, Routes } from "react-router-dom";
+import { DefaultLayout } from "./layout/default";
+import { lazy, Suspense } from "react";
+import CardView from "./pages/home/views/list";
+
+const LazyAboutView = lazy(() => import("./pages/about/views"));
+const LazyMapPageView = lazy(() => import("./pages/maps/views"));
 
 function App() {
   return (
     <>
-      <DashboardLayout>
-        <HeroSection />
-        <CountriesCard />
-      </DashboardLayout>
+      <Suspense fallback={<div>Loading...</div>}>
+        <Routes>
+          <Route element={<DefaultLayout />}>
+            <Route path="/" element={<CardView />} />
+            <Route path="about" element={<LazyAboutView />} />
+            <Route path="maps" element={<LazyMapPageView />} />
+          </Route>
+        </Routes>
+      </Suspense>
     </>
   );
 }
-
 export default App;

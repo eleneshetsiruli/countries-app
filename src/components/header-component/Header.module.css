@@ -26,3 +26,6 @@
   color: gray;
   cursor: pointer;
 }
+.activeNavItem {
+  color: rgb(90, 11, 11) !important;
+}

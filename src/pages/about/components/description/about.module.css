@@ -1,0 +1,9 @@
+.aboutContent {
+  height: 100vh;
+  display: flex;
+  padding: 100px;
+}
+
+.aboutContent p {
+  width: 400px;
+}

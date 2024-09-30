@@ -4,7 +4,7 @@ import {
   CardImg,
   CardTitle,
   SingleCard,
-} from "./card-components/";
+} from "./card-components/index.ts";
 import countriesData from "./countries-data/countries.ts";
 import styles from "./CountriesCard.module.css";
 
