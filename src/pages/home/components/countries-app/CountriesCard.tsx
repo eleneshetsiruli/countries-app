@@ -4,8 +4,8 @@ import {
   CardImg,
   CardTitle,
   SingleCard,
-} from "./card-components/index.ts";
-import countriesData from "./countries-data/countries.ts";
+} from "../../../../data/index.ts";
+import countriesData from "../../../../data/countries.ts";
 import styles from "./CountriesCard.module.css";
 
 interface CountryData {
@@ -13,6 +13,7 @@ interface CountryData {
   population: string;
   flag: string;
   capital: string;
+  id: string;
 }
 interface CountryProps {
   data: CountryData;
@@ -38,6 +39,7 @@ const Country: React.FC<CountryProps> = ({ data }) => {
 
   return (
     <SingleCard
+      renderId={data.id}
       renderTitle={<CardTitle title={data.name} />}
       renderImg={<CardImg img={data.flag} />}
     >

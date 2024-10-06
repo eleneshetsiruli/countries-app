@@ -1,5 +1,5 @@
 type CardTitleProps = {
-  title: string;
+  title: string | undefined;
 };
 
 export const CardTitle = ({ title }: CardTitleProps) => {

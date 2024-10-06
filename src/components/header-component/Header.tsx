@@ -18,6 +18,9 @@ export const Header = () => {
       <NavLink className={handleActiveNav} to={"maps"}>
         Maps
       </NavLink>
+      <NavLink className={handleActiveNav} to={"contacts"}>
+        Contact
+      </NavLink>
     </div>
   );
 };
