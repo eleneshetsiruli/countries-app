@@ -13,8 +13,8 @@ export const SingleCardContent = () => {
     <div className={styles.singleContainer}>
       <CardTitle title={filteredData?.name} />
       <img src={filteredData?.flag} alt="flag" />
-      <CardDetails label={"Population"} population={filteredData?.population} />
-      <CardDetails label={"Capital"} population={filteredData?.capital} />
+      <CardDetails label={"Population"} content={filteredData?.population} />
+      <CardDetails label={"Capital"} content={filteredData?.capital} />
     </div>
   );
 };

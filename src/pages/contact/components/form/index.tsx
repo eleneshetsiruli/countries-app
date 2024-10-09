@@ -18,6 +18,7 @@ const handleKeyDown = (ev: KeyboardEvent<HTMLTextAreaElement>) => {
   if (ev.key === "Enter") {
     ev.preventDefault();
     const form = ev.currentTarget.form;
+
     if (form) {
       handleChangeForm({
         currentTarget: form,
@@ -26,6 +27,7 @@ const handleKeyDown = (ev: KeyboardEvent<HTMLTextAreaElement>) => {
     }
   }
 };
+
 export const FormContent = () => {
   return (
     <form onSubmit={handleChangeForm} className={styles.formContainer}>

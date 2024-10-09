@@ -15,10 +15,12 @@ export const SingleCard = ({
   renderId,
 }: SingleCardProps) => {
   return (
-    <Link to={`cards/${renderId}`} className={styles.singleCard}>
-      {renderTitle}
-      {renderImg}
+    <div className={styles.singleCard}>
+      <Link to={`cards/${renderId}`}>
+        {renderTitle}
+        {renderImg}
+      </Link>
       {children}
-    </Link>
+    </div>
   );
 };

@@ -2,14 +2,14 @@ import styles from "../CountriesCard.module.css";
 
 type CardDetailsProps = {
   label: string | undefined;
-  population: string | undefined;
+  content: string | undefined | number;
 };
 
-export const CardDetails = ({ label, population }: CardDetailsProps) => {
+export const CardDetails = ({ label, content }: CardDetailsProps) => {
   return (
     <div className={styles.populationNumberBox}>
       <span>{label}</span>
-      <span>{population}</span>
+      <span>{content}</span>
     </div>
   );
 };

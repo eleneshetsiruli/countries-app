@@ -1,11 +1,7 @@
 import { FormContent } from "../components/form";
 
 export const ContactView = () => {
-  return (
-    <>
-      <FormContent />
-    </>
-  );
+  return <FormContent />;
 };
 
 export default ContactView;

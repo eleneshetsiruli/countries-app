@@ -1,9 +1,8 @@
 .container {
   display: flex;
   gap: 20px;
-  height: 100vh;
+  height: 400px;
   justify-content: center;
-  align-items: center;
 }
 
 .singleCard {
@@ -17,6 +16,10 @@
   box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
   gap: 15px;
   background-color: white;
+  text-decoration: none;
+}
+
+.singleCard a {
   text-decoration: none;
 }
 
@@ -44,6 +47,31 @@
 
 .singleCard img {
   width: 200px;
+}
+
+.ratingBox span:nth-child(2) {
+  color: green;
+}
+
+.likeBtn {
+  border-radius: 50px;
+  width: 30px;
+  height: 30px;
+  align-self: center;
+  color: green;
+}
+
+.likeBtn:hover {
+  background-color: gray;
+  color: white;
+}
+
+.selectContainer {
+  margin: 50px 0 50px 100px;
+  width: 200px;
+  height: 30px;
+  padding-left: 20px;
+  color: gray;
 }
 
 /* media query */
