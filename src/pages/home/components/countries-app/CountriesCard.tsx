@@ -21,20 +21,22 @@ interface CountryData {
 }
 interface CountryProps {
   data: CountryData;
-  onClick: (id: string) => void;
+  onClick: (id: string) => () => void;
 }
 
 export const CountriesCard = () => {
   const [countriesStaticData, setCountriesStaticData] =
     useState<CountryData[]>(countriesData);
 
-  function handleUpRating(id: string) {
-    setCountriesStaticData((prevData) =>
-      prevData.map((el) =>
-        el.id === id ? { ...el, rating: el.rating + 1 } : el
-      )
-    );
-  }
+  const handleUpRating = (id: string) => () => {
+    {
+      setCountriesStaticData((prevData) =>
+        prevData.map((el) =>
+          el.id === id ? { ...el, rating: el.rating + 1 } : el
+        )
+      );
+    }
+  };
 
   function handleChangeOption(ev: ChangeEvent<HTMLSelectElement>) {
     const sortedCards = [...countriesStaticData].sort((a, b) =>
@@ -73,7 +75,7 @@ const Country: React.FC<CountryProps> = ({ data, onClick }) => {
           <CardDetails label="Rating" content={data.rating} />
         </div>
       </CardContent>
-      <LikeButton onClick={() => onClick(data.id)} />
+      <LikeButton onClick={onClick(data.id)} />
     </SingleCard>
   );
 };
