@@ -69,6 +69,7 @@ export const CountriesCard = () => {
     };
 
     dispatch({ type: "ADD_COUNTRY", payload: newCountry });
+    ev.currentTarget.reset();
   }
 
   return (
