@@ -1,8 +1,12 @@
 import styles from "../CountriesCard.module.css";
 
-export const LikeButton: React.FC<{ onClick: () => void }> = ({ onClick }) => {
+interface LikeButtonProps {
+  handleUpRating: (event: React.MouseEvent<HTMLButtonElement>) => void;
+}
+
+export const LikeButton: React.FC<LikeButtonProps> = ({ handleUpRating }) => {
   return (
-    <button className={styles.likeBtn} onClick={onClick}>
+    <button className={styles.likeBtn} onClick={handleUpRating}>
       like
     </button>
   );

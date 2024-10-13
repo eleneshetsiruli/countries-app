@@ -1,11 +1,13 @@
 .container {
   display: flex;
   gap: 20px;
-  height: 400px;
+  margin-bottom: 50px;
   justify-content: center;
+  flex-wrap: wrap;
 }
 
-.singleCard {
+.singleCard,
+.delete {
   width: 300px;
   height: 300px;
   display: flex;
@@ -27,7 +29,8 @@
   color: rgb(90, 11, 11);
 }
 
-.singleCard span {
+.singleCard span,
+.delete span {
   color: rgb(131, 150, 172);
   font-weight: 600;
 }
@@ -45,7 +48,8 @@
   justify-content: space-between;
 }
 
-.singleCard img {
+.singleCard img,
+.delete img {
   width: 200px;
 }
 
@@ -72,6 +76,32 @@
   height: 30px;
   padding-left: 20px;
   color: gray;
+}
+
+.likeDeleteBox {
+  display: flex;
+  gap: 50px;
+}
+
+.deleteBtn {
+  color: red;
+  padding: 5px;
+  background-color: transparent;
+  border: 1px solid rgb(194, 190, 190);
+}
+
+.deleteBtn:hover {
+  background-color: rgb(169, 165, 165);
+}
+
+.delete {
+  opacity: 0.5;
+  text-decoration: line-through;
+}
+
+.cardSection {
+  display: flex;
+  flex-direction: column;
 }
 
 /* media query */

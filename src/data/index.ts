@@ -3,3 +3,9 @@ export * from "../pages/home/components/countries-app/card-components/CardDetail
 export * from "../pages/home/components/countries-app/card-components/CardImg";
 export * from "../pages/home/components/countries-app/card-components/CardTitle";
 export * from "../pages/home/components/countries-app/card-components/SingleCard";
+export * from "../pages/home/components/countries-app/card-components/DeleteBtn";
+export * from "../pages/home/components/countries-app/card-components/LikeButton";
+export * from "../pages/home/components/countries-app/card-components/SortingOptions";
+export * from "../pages/home/components/countries-app/card-components/undoBtn";
+export * from "../pages/home/components/countries-app/card-components/reducer/CountriesReducer";
+export * from "../pages/home/components/countries-app/card-components/newCountry";

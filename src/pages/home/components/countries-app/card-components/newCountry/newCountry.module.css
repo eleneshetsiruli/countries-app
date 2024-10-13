@@ -1,0 +1,23 @@
+.countryForm {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 150px;
+  margin-bottom: 150px;
+  align-self: center;
+}
+.countryForm input {
+  height: 30px;
+  border-radius: 5px;
+  padding-left: 10px;
+  font-style: italic;
+}
+.countryForm button {
+  border-radius: 50px;
+  height: 40px;
+  background-color: rgb(150, 188, 150);
+  color: white;
+}
+.countryForm button:hover {
+  background-color: green;
+}
