@@ -27,21 +27,29 @@ export const countriesReducer = (
         originalIndex: index,
       }));
 
-    case "ADD_COUNTRY":
-      return [...state, action.payload];
+    case "ADD_COUNTRY": {
+      const updatedStateWithNewCountry = [
+        ...state,
+        { ...action.payload, deleted: false },
+      ];
+
+      return updatedStateWithNewCountry.sort((a, b) => {
+        if (a.deleted && !b.deleted) return 1;
+        if (!a.deleted && b.deleted) return -1;
+        return 0;
+      });
+    }
 
     case "REMOVE_COUNTRY": {
       const updatedState = state.map((country) =>
         country.id === action.payload ? { ...country, deleted: true } : country
       );
 
-      const sortedState = updatedState.sort((a, b) => {
+      return updatedState.sort((a, b) => {
         if (a.deleted && !b.deleted) return 1;
         if (!a.deleted && b.deleted) return -1;
         return 0;
       });
-
-      return sortedState;
     }
     case "INCREASE_RATING":
       return state.map((country) =>
@@ -64,10 +72,7 @@ export const countriesReducer = (
         }
         return 0;
       });
-
-      const finalState = [...sortedRestoredCards, ...deletedCards];
-
-      return finalState;
+      return [...sortedRestoredCards, ...deletedCards];
     }
 
     default:

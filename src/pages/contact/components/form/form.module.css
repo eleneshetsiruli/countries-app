@@ -22,3 +22,7 @@ textarea {
 .submitBtn:hover {
   background-color: gray;
 }
+
+.errorMessages {
+  color: red;
+}
