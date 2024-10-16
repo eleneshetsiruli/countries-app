@@ -21,3 +21,7 @@
 .countryForm button:hover {
   background-color: green;
 }
+
+.errorMessage {
+  color: red;
+}

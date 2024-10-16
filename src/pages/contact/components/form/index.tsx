@@ -1,41 +1,128 @@
-import { FormEvent, KeyboardEvent } from "react";
+import { useReducer } from "react";
 import { InputLabelBox } from "../inputLabel";
 import styles from "./form.module.css";
+import { Action, Errors, FormValues, State } from "./interfaces";
 
-function handleChangeForm(ev: FormEvent<HTMLFormElement>) {
-  ev.preventDefault();
-
-  const formData = {
-    სახელი: (ev.currentTarget["სახელი"] as HTMLInputElement).value,
-    გვარი: (ev.currentTarget["გვარი"] as HTMLInputElement).value,
-    email: (ev.currentTarget["email"] as HTMLInputElement).value,
-    შეტყობინება: (ev.currentTarget["textar"] as HTMLTextAreaElement).value,
-  };
-  console.log(formData);
-}
-
-const handleKeyDown = (ev: KeyboardEvent<HTMLTextAreaElement>) => {
-  if (ev.key === "Enter") {
-    ev.preventDefault();
-    const form = ev.currentTarget.form;
-
-    if (form) {
-      handleChangeForm({
-        currentTarget: form,
-        preventDefault: () => {},
-      } as FormEvent<HTMLFormElement>);
-    }
-  }
+const initialState = {
+  formValues: {
+    სახელი: "",
+    გვარი: "",
+    email: "",
+    შეტყობინება: "",
+  },
+  errors: {},
 };
 
+function reducer(state: State, action: Action): State {
+  switch (action.type) {
+    case "SET_VALUE":
+      return {
+        ...state,
+        formValues: {
+          ...state.formValues,
+          [action.payload.name]: action.payload.value,
+        },
+        errors: {
+          ...state.errors,
+          [action.payload.name]: "",
+        },
+      };
+    case "SET_ERRORS":
+      return {
+        ...state,
+        errors: action.payload,
+      };
+
+    case "RESET_FORM":
+      return initialState;
+    default:
+      return state;
+  }
+}
+
 export const FormContent = () => {
+  const [state, dispatch] = useReducer(reducer, initialState);
+
+  const handleChange = (
+    ev: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = ev.target;
+    dispatch({ type: "SET_VALUE", payload: { name, value } });
+  };
+
+  const validateForm = (): Errors => {
+    const newErrors: Errors = {};
+    const { formValues } = state;
+
+    for (const key in formValues) {
+      if (!formValues[key as keyof FormValues]) {
+        newErrors[key] = "ეს ველი აუცილებელია";
+      }
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (formValues.email && !emailRegex.test(formValues.email)) {
+      newErrors.email = "ბრძანების ფორმატში უნდა იყოს";
+    }
+
+    return newErrors;
+  };
+
+  const handleSubmit = (ev: React.FormEvent<HTMLFormElement>) => {
+    ev.preventDefault();
+    const validationErrors = validateForm();
+    if (Object.keys(validationErrors).length > 0) {
+      dispatch({ type: "SET_ERRORS", payload: validationErrors });
+      return;
+    }
+
+    console.log(state.formValues);
+    dispatch({ type: "RESET_FORM" });
+  };
+
   return (
-    <form onSubmit={handleChangeForm} className={styles.formContainer}>
-      <InputLabelBox label="სახელი" type="text" />
-      <InputLabelBox label="გვარი" type="text" />
-      <InputLabelBox label="email" type="email" />
+    <form onSubmit={handleSubmit} className={styles.formContainer}>
+      <InputLabelBox
+        value={state.formValues.სახელი}
+        label="სახელი"
+        type="text"
+        onchange={handleChange}
+      />
+      {state.errors.სახელი && (
+        <p className={styles.errorMessages}>{state.errors.სახელი}</p>
+      )}
+
+      <InputLabelBox
+        value={state.formValues.გვარი}
+        label="გვარი"
+        type="text"
+        onchange={handleChange}
+      />
+      {state.errors.გვარი && (
+        <p className={styles.errorMessages}>{state.errors.გვარი}</p>
+      )}
+
+      <InputLabelBox
+        label="email"
+        type="email"
+        value={state.formValues.email}
+        onchange={handleChange}
+      />
+      {state.errors.email && (
+        <p className={styles.errorMessages}>{state.errors.email}</p>
+      )}
+
       <label htmlFor="textar">შეტყობინება</label>
-      <textarea onKeyDown={handleKeyDown} name="textar" id="textar"></textarea>
+      <textarea
+        value={state.formValues.შეტყობინება}
+        onChange={handleChange}
+        name="შეტყობინება"
+        id="textar"
+      ></textarea>
+      {state.errors.შეტყობინება && (
+        <p className={styles.errorMessages}>{state.errors.შეტყობინება}</p>
+      )}
+
       <button className={styles.submitBtn} type="submit">
         გაგზავნა
       </button>
