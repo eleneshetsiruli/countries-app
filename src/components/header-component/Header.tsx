@@ -1,26 +1,38 @@
-import { NavLink, NavLinkRenderProps } from "react-router-dom";
+import { Link, NavLink, NavLinkRenderProps, useParams } from "react-router-dom";
 import styles from "./Header.module.css";
+import { headerTranslation } from "./translation";
 
 const handleActiveNav = ({ isActive }: NavLinkRenderProps) => {
   return isActive ? styles.activeNavItem : "";
 };
 
 export const Header = () => {
+  const { lang } = useParams<string>();
+
+  const currentLang: keyof typeof headerTranslation = (
+    lang === "en" || lang === "ka" ? lang : "en"
+  ) as keyof typeof headerTranslation;
+
+  const content = headerTranslation[currentLang];
+
   return (
     <div className={styles.header}>
       <h1>WorldFacts</h1>
       <NavLink className={handleActiveNav} to={"/"}>
-        Home
+        {content.home}
       </NavLink>
       <NavLink className={handleActiveNav} to={"about"}>
-        About
+        {content.about}
       </NavLink>
       <NavLink className={handleActiveNav} to={"maps"}>
-        Maps
+        {content.maps}
       </NavLink>
       <NavLink className={handleActiveNav} to={"contacts"}>
-        Contact
+        {content.contact}
       </NavLink>
+      <Link to={`${currentLang === "en" ? "/ka/home" : "/en/home"}`}>
+        {currentLang === "en" ? "ქართულად" : "English"}
+      </Link>
     </div>
   );
 };

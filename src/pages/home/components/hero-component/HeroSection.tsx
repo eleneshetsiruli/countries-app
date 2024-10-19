@@ -1,19 +1,25 @@
+import { translations } from "../../translations";
 import styles from "./Hero.module.css";
+type Lang = keyof typeof translations;
+interface HeroSectionProps {
+  lang: Lang;
+}
 
-export const HeroSection = () => {
+export const HeroSection: React.FC<HeroSectionProps> = ({ lang }) => {
+  const content = translations[lang];
   return (
     <div className={styles.heroSectionContainer}>
       <div className={styles.heroContent}>
-        <h2>Explore the World's Facts</h2>
-        <h3>Discover detailed information about countries around the globe.</h3>
-        <p>195 Countries</p>
-        <p>7.8 Billion People</p>
+        <h2>{content.heroHedline}</h2>
+        <h3>{content.discover}</h3>
+        <p>{content.country}</p>
+        <p>{content.people}</p>
       </div>
       <div className={styles.searchContent}>
         <input
           className={styles.findInput}
           type="text"
-          placeholder="Find countrie..."
+          placeholder={content.find}
         />
         <button className={styles.arrowLogo}>
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">

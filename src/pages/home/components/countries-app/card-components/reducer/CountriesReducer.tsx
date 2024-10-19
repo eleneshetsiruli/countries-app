@@ -25,7 +25,7 @@ export const countriesReducer = (
       return action.payload.map((country, index) => ({
         ...country,
         originalIndex: index,
-      }));
+      })) as CountryData[];
 
     case "ADD_COUNTRY": {
       const updatedStateWithNewCountry = [

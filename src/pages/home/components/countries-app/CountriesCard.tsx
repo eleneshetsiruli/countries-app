@@ -8,6 +8,9 @@ import {
   NewCountry,
 } from "../../../../data/index.ts";
 import { Country } from "./card-components/country/index.tsx";
+import { useParams } from "react-router-dom";
+import { cardTranslations } from "./card-components/country/translations/index.tsx";
+
 export const CountriesCard = () => {
   const [countriesStaticData, dispatch] = useReducer<
     React.Reducer<CountryData[], Action>
@@ -29,19 +32,21 @@ export const CountriesCard = () => {
     originalIndex: countriesStaticData.length - 1,
   });
 
+  const { lang } = useParams<{ lang?: string }>();
+
   function handleChangeInput(ev: ChangeEvent<HTMLInputElement>) {
     const { name, value } = ev.target;
     setNewCountry((prev) => ({ ...prev, [name]: value }));
 
-    if (name === "name" && value.length < 5) {
-      setErrorMessage((prev) => ({ ...prev, name: "მინიმუმ 5 სიმბოლო" }));
-    } else if (name === "population" && isNaN(Number(value))) {
+    if (name === "population" && isNaN(Number(value))) {
       setErrorMessage((prev) => ({
         ...prev,
         population: "შეიყვანეთ მხოლოდ ციფრები",
       }));
     } else if (name === "capital" && !value) {
       setErrorMessage((prev) => ({ ...prev, capital: "აუცილებელი ველი" }));
+    } else if (name === "name" && value.length < 5) {
+      setErrorMessage((prev) => ({ ...prev, name: "მინიმუმ 5 სიმბოლო" }));
     } else {
       setErrorMessage((prev) => ({ ...prev, [name]: "" }));
     }
@@ -112,16 +117,19 @@ export const CountriesCard = () => {
   }
 
   function validateFields() {
+    const currentLang: keyof typeof cardTranslations =
+      lang === "en" || lang === "ka" ? lang : "en";
+    const content = cardTranslations[currentLang];
     const errors = { name: "", population: "", capital: "" };
 
     if (newCountry.name.length < 5) {
-      errors.name = "მინიმუმ 5 სიმბოლო";
+      errors.name = content.errorName;
     }
     if (!newCountry.population || isNaN(Number(newCountry.population))) {
-      errors.population = "შეიყვანეთ მხოლოდ ციფრები";
+      errors.population = content.errorPop;
     }
     if (!newCountry.capital) {
-      errors.capital = "აუცილებელი ველი";
+      errors.capital = content.errorMust;
     }
     setErrorMessage(errors);
 

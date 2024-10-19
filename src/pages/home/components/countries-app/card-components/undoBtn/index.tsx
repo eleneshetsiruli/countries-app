@@ -1,13 +1,19 @@
+import { useParams } from "react-router-dom";
 import styles from "./undoBtn.module.css";
+import { cardTranslations } from "../country/translations";
 
 interface UndoButtonProps {
-  handleUndo: (event: React.MouseEvent<HTMLButtonElement>) => void; // Ensure this matches the expected function signature
+  handleUndo: (event: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
 export const UndoBtn: React.FC<UndoButtonProps> = ({ handleUndo }) => {
+  const { lang } = useParams<{ lang?: string }>();
+  const currentLang: keyof typeof cardTranslations =
+    lang === "en" || lang === "ka" ? lang : "en";
+  const content = cardTranslations[currentLang];
   return (
     <button className={styles.undoBtn} onClick={handleUndo}>
-      undo
+      {content.undo}
     </button>
   );
 };

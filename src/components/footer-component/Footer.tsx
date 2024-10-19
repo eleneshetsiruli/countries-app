@@ -1,5 +1,7 @@
 import styles from "./Footer.module.css";
 import React from "react";
+import { footerTranslations } from "./translations";
+import { useParams } from "react-router-dom";
 
 interface FooterContentProps {
   title: string;
@@ -9,12 +11,17 @@ interface FooterContentProps {
 }
 
 export const Footer = () => {
+  const { lang } = useParams<string>();
+  const currentLang: keyof typeof footerTranslations = (
+    lang === "en" || lang === "ka" ? lang : "en"
+  ) as keyof typeof footerTranslations;
+  const content = footerTranslations[currentLang];
   return (
     <div className={styles.footerContainer}>
       <FooterContent
-        title={"ABOUT US"}
-        lineOne={"Our Community"}
-        lineTwo={"Contact Us"}
+        title={content.aboutUs}
+        lineOne={content.community}
+        lineTwo={content.contact}
       >
         <div className={styles.iconsBox}>
           <svg viewBox="0 0 448 512">
@@ -31,14 +38,14 @@ export const Footer = () => {
         </div>
       </FooterContent>
       <FooterContent
-        title={"OUR RESULTS"}
-        lineOne={"Awards & Memberships"}
-        lineTwo={"Client Reviews"}
+        title={content.results}
+        lineOne={content.awards}
+        lineTwo={content.reviews}
       />
       <FooterContent
-        title={"Resources"}
-        lineOne={"Read Our Blog"}
-        lineTwo={"Free Injury Guides"}
+        title={content.Resources}
+        lineOne={content.blog}
+        lineTwo={content.guides}
       />
     </div>
   );

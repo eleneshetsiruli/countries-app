@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import styles from "../CountriesCard.module.css";
 type SingleCardProps = {
   children: React.ReactNode;
@@ -15,9 +15,11 @@ export const SingleCard = ({
   renderId,
   deletedBtn,
 }: SingleCardProps) => {
+  const { lang } = useParams();
+  console.log(lang);
   return (
     <div className={!deletedBtn ? `${styles.singleCard}` : `${styles.delete}`}>
-      <Link to={`cards/${renderId}`}>
+      <Link to={`/${lang}/cards/${renderId}`}>
         {renderTitle}
         {renderImg}
       </Link>

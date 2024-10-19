@@ -1,10 +1,11 @@
 import "./App.css";
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import { DefaultLayout } from "./layout/default";
 import { lazy, Suspense } from "react";
 import CardView from "./pages/home/views/list";
 import LoadingPage from "./pages/loading";
 import SingleCardView from "./pages/singleCardPage/views";
+
 const LazyAboutView = lazy(() => import("./pages/about/views"));
 const LazyMapPageView = lazy(() => import("./pages/maps/views"));
 const LazyContactView = lazy(() => import("./pages/contact/views"));
@@ -14,8 +15,9 @@ function App() {
   return (
     <>
       <Routes>
-        <Route element={<DefaultLayout />}>
-          <Route path="/" element={<CardView />} />
+        <Route path="/:lang" element={<DefaultLayout />}>
+          <Route path="home" element={<CardView />} />
+
           <Route
             path="about"
             element={
@@ -32,6 +34,7 @@ function App() {
               </Suspense>
             }
           />
+
           <Route
             path="cards/:id"
             element={
@@ -58,6 +61,8 @@ function App() {
             </Suspense>
           }
         />
+
+        <Route path="/" element={<Navigate to="/en/home" />} />
       </Routes>
     </>
   );
