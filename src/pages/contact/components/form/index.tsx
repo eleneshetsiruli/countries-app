@@ -2,6 +2,8 @@ import { useReducer } from "react";
 import { InputLabelBox } from "../inputLabel";
 import styles from "./form.module.css";
 import { Action, Errors, FormValues, State } from "./interfaces";
+import { useParams } from "react-router-dom";
+import { formTranslate } from "./translations";
 
 const initialState = {
   formValues: {
@@ -42,6 +44,13 @@ function reducer(state: State, action: Action): State {
 
 export const FormContent = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
+  const { lang } = useParams<string>();
+
+  const currentLang: keyof typeof formTranslate = (
+    lang === "en" || lang === "ka" ? lang : "en"
+  ) as keyof typeof formTranslate;
+
+  const content = formTranslate[currentLang];
 
   const handleChange = (
     ev: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -76,7 +85,6 @@ export const FormContent = () => {
       return;
     }
 
-    console.log(state.formValues);
     dispatch({ type: "RESET_FORM" });
   };
 
@@ -84,7 +92,7 @@ export const FormContent = () => {
     <form onSubmit={handleSubmit} className={styles.formContainer}>
       <InputLabelBox
         value={state.formValues.სახელი}
-        label="სახელი"
+        label={content.name}
         type="text"
         onchange={handleChange}
       />
@@ -94,7 +102,7 @@ export const FormContent = () => {
 
       <InputLabelBox
         value={state.formValues.გვარი}
-        label="გვარი"
+        label={content.lastName}
         type="text"
         onchange={handleChange}
       />
@@ -103,7 +111,7 @@ export const FormContent = () => {
       )}
 
       <InputLabelBox
-        label="email"
+        label={content.email}
         type="email"
         value={state.formValues.email}
         onchange={handleChange}
@@ -112,7 +120,7 @@ export const FormContent = () => {
         <p className={styles.errorMessages}>{state.errors.email}</p>
       )}
 
-      <label htmlFor="textar">შეტყობინება</label>
+      <label htmlFor="textar">{content.textAr}</label>
       <textarea
         value={state.formValues.შეტყობინება}
         onChange={handleChange}
@@ -124,7 +132,7 @@ export const FormContent = () => {
       )}
 
       <button className={styles.submitBtn} type="submit">
-        გაგზავნა
+        {content.send}
       </button>
     </form>
   );
