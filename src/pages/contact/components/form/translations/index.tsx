@@ -5,6 +5,7 @@ export const formTranslate = {
     email: "email",
     textAr: "text Here",
     send: "send",
+    errorMess: "required field",
   },
   ka: {
     name: "სახელი",
@@ -12,5 +13,6 @@ export const formTranslate = {
     email: "მეილი",
     textAr: "შეტყობინება",
     send: "გაგზავა",
+    errorMess: "ეს ველი აუცილებელიაa",
   },
 };

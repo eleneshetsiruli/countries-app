@@ -65,7 +65,7 @@ export const FormContent = () => {
 
     for (const key in formValues) {
       if (!formValues[key as keyof FormValues]) {
-        newErrors[key] = "ეს ველი აუცილებელია";
+        newErrors[key] = content.errorMess;
       }
     }
 
