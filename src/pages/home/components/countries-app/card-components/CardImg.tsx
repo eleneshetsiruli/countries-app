@@ -3,5 +3,5 @@ type CardImgProps = {
 };
 
 export const CardImg = ({ img }: CardImgProps) => {
-  return <img src={img} alt="img" />;
+  return <img style={{ width: 200, height: 150 }} src={img} alt="img" />;
 };

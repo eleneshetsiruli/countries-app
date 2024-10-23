@@ -22,33 +22,87 @@ export const CountriesCard = () => {
   });
 
   const [newCountry, setNewCountry] = useState({
-    name: "",
+    name: { en: "", ka: "" },
     population: "",
-    capital: "",
-    flag: "https://c7.alamy.com/comp/2B1FW7T/national-flags-fabric-tags-g20-countries-labels-official-country-flag-tag-vector-set-2B1FW7T.jpg",
+    capital: { en: "", ka: "" },
+    flag: "",
     id: Math.random().toString(36),
     rating: 0,
     deleted: false,
     originalIndex: countriesStaticData.length - 1,
   });
+  const [newCountEng, setNewCountEng] = useState(true);
+  const [newCountGeo, setNewCountGeo] = useState(false);
 
   const { lang } = useParams<{ lang?: string }>();
+  const currentLang: keyof typeof cardTranslations =
+    lang === "en" || lang === "ka" ? lang : "en";
+  const content = cardTranslations[currentLang];
 
   function handleChangeInput(ev: ChangeEvent<HTMLInputElement>) {
     const { name, value } = ev.target;
-    setNewCountry((prev) => ({ ...prev, [name]: value }));
 
-    if (name === "population" && isNaN(Number(value))) {
-      setErrorMessage((prev) => ({
+    if (name === "name_en" || name === "name_ka") {
+      setNewCountry((prev) => ({
         ...prev,
-        population: "შეიყვანეთ მხოლოდ ციფრები",
+        name: {
+          ...prev.name,
+          [name === "name_en" ? "en" : "ka"]: value,
+        },
       }));
-    } else if (name === "capital" && !value) {
-      setErrorMessage((prev) => ({ ...prev, capital: "აუცილებელი ველი" }));
-    } else if (name === "name" && value.length < 5) {
-      setErrorMessage((prev) => ({ ...prev, name: "მინიმუმ 5 სიმბოლო" }));
-    } else {
-      setErrorMessage((prev) => ({ ...prev, [name]: "" }));
+
+      if (value.length < 5) {
+        setErrorMessage((prev) => ({
+          ...prev,
+          name: "მინიმუმ 5 სიმბოლო",
+        }));
+      } else {
+        setErrorMessage((prev) => ({
+          ...prev,
+          name: "",
+        }));
+      }
+    }
+
+    if (name === "capital_en" || name === "capital_ka") {
+      const langKey = name === "capital_en" ? "en" : "ka";
+      setNewCountry((prev) => ({
+        ...prev,
+        capital: {
+          ...prev.capital,
+          [langKey]: value,
+        },
+      }));
+
+      if (!value) {
+        setErrorMessage((prev) => ({
+          ...prev,
+          capital: "აუცილებელი ველი",
+        }));
+      } else {
+        setErrorMessage((prev) => ({
+          ...prev,
+          capital: "",
+        }));
+      }
+    }
+
+    if (name === "population") {
+      setNewCountry((prev) => ({ ...prev, population: value }));
+
+      if (!value) {
+        setErrorMessage((prev) => ({
+          ...prev,
+          population: "აუცილებელი ველი",
+        }));
+      } else if (isNaN(Number(value)) || Number(value) <= 0) {
+        setErrorMessage((prev) => ({
+          ...prev,
+          population: "შეიყვანეთ მხოლოდ დადებითი რიცხვი",
+        }));
+      } else {
+        setErrorMessage((prev) => ({ ...prev, population: "" }));
+      }
     }
   }
 
@@ -104,16 +158,18 @@ export const CountriesCard = () => {
     {
       dispatch({ type: "ADD_COUNTRY", payload: freshCountry });
       setNewCountry({
-        name: "",
+        name: { en: "", ka: "" },
         population: "",
-        capital: "",
-        flag: "https://c7.alamy.com/comp/2B1FW7T/national-flags-fabric-tags-g20-countries-labels-official-country-flag-tag-vector-set-2B1FW7T.jpg",
+        capital: { en: "", ka: "" },
+        flag: "",
         id: Math.random().toString(36),
         rating: 0,
         deleted: false,
         originalIndex: countriesStaticData.length - 1,
       });
     }
+    setNewCountEng(true);
+    setNewCountGeo(false);
   }
 
   function validateFields() {
@@ -122,7 +178,7 @@ export const CountriesCard = () => {
     const content = cardTranslations[currentLang];
     const errors = { name: "", population: "", capital: "" };
 
-    if (newCountry.name.length < 5) {
+    if (newCountry.name.en.length < 5 || newCountry.name.ka.length < 5) {
       errors.name = content.errorName;
     }
     if (!newCountry.population || isNaN(Number(newCountry.population))) {
@@ -134,6 +190,33 @@ export const CountriesCard = () => {
     setErrorMessage(errors);
 
     return !errors.name && !errors.population && !errors.capital;
+  }
+
+  const handleChangeFile = (ev: React.ChangeEvent<HTMLInputElement>) => {
+    const file = ev.target.files?.[0];
+
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64String = reader.result as string;
+
+        setNewCountry((prevValue) => ({
+          ...prevValue,
+          flag: base64String,
+        }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  function handleClickedEnglish() {
+    setNewCountEng(true);
+    setNewCountGeo(false);
+  }
+
+  function handleClickGeorgian() {
+    setNewCountEng(false);
+    setNewCountGeo(true);
   }
 
   return (
@@ -152,12 +235,33 @@ export const CountriesCard = () => {
           />
         ))}
       </div>
-      <NewCountry
-        handleChangeInput={handleChangeInput}
-        handleSubmitNewCountry={handleSubmitNewCountry}
-        value={newCountry}
-        errorMessage={errorMessage}
-      />
+      <div className={styles.newCountryBox}>
+        <div className={styles.langBox}>
+          <button
+            className={`${newCountEng ? styles.transparant : ""}`}
+            onClick={handleClickedEnglish}
+          >
+            {content.english}
+          </button>
+          <button
+            className={`${newCountGeo ? styles.transparant : ""}`}
+            onClick={handleClickGeorgian}
+          >
+            {content.georgian}
+          </button>
+        </div>
+        <NewCountry
+          setNewCountEng={setNewCountEng}
+          setNewCountGeo={setNewCountGeo}
+          newCountEng={newCountEng}
+          newCountGeo={newCountGeo}
+          handleChangeInput={handleChangeInput}
+          handleSubmitNewCountry={handleSubmitNewCountry}
+          value={newCountry}
+          errorMessage={errorMessage}
+          handleChangeFile={handleChangeFile}
+        />
+      </div>
     </section>
   );
 };

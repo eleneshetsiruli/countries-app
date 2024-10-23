@@ -11,11 +11,7 @@ import {
 import { CountryProps } from "../interfaces";
 import styles from "../../CountriesCard.module.css";
 import { useParams } from "react-router-dom";
-import {
-  cardTranslations,
-  CountryNameKeys,
-  CountryNameTranslations,
-} from "./translations";
+import { cardTranslations } from "./translations";
 
 export const Country: React.FC<CountryProps> = ({
   data,
@@ -35,23 +31,13 @@ export const Country: React.FC<CountryProps> = ({
 
   const content = cardTranslations[currentLang];
 
-  const isCountryNameKey = (name: string): name is CountryNameKeys => {
-    return name in CountryNameTranslations;
-  };
+  const countryName = data.name[currentLang];
+
   return (
     <>
       <SingleCard
         renderId={data.id}
-        renderTitle={
-          <CardTitle
-            title={
-              isCountryNameKey(data.name) &&
-              CountryNameTranslations[data.name][currentLang]
-                ? CountryNameTranslations[data.name][currentLang]
-                : data.name
-            }
-          />
-        }
+        renderTitle={<CardTitle title={countryName} />}
         renderImg={<CardImg img={data.flag} />}
         deletedBtn={deletedBtn}
       >

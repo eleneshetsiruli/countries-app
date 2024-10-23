@@ -6,10 +6,10 @@ type Action =
   | { type: "UNDO_DELETE"; payload: string };
 
 interface CountryData {
-  name: string;
+  name: { en: string; ka: string };
   population: string;
   flag: string;
-  capital: string;
+  capital: { en: string; ka: string };
   id: string;
   rating: number;
   deleted?: boolean;

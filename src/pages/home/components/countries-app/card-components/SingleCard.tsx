@@ -16,7 +16,7 @@ export const SingleCard = ({
   deletedBtn,
 }: SingleCardProps) => {
   const { lang } = useParams();
-  console.log(lang);
+
   return (
     <div className={!deletedBtn ? `${styles.singleCard}` : `${styles.delete}`}>
       <Link to={`/${lang}/cards/${renderId}`}>
