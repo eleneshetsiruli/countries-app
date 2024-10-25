@@ -1,7 +1,7 @@
-import { SingleCardContent } from "../components/singlecard";
+import { SingleCardContent } from '../components/singlecard';
 
 export const SingleCardView = () => {
-  return <SingleCardContent />;
+    return <SingleCardContent />;
 };
 
 export default SingleCardView;

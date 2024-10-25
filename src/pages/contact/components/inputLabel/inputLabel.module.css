@@ -1,15 +1,15 @@
 .box {
-  display: flex;
-  gap: 50px;
-  color: gray;
+    display: flex;
+    gap: 50px;
+    color: gray;
 }
 
 .box input {
-  height: 30px;
-  border-radius: 10px;
-  width: 200px;
+    height: 30px;
+    border-radius: 10px;
+    width: 200px;
 }
 
 .box label {
-  width: 50px;
+    width: 50px;
 }

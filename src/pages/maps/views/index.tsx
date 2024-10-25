@@ -1,10 +1,10 @@
-import { MapContent } from "../components";
+import { MapContent } from '../components';
 
 export const MapPageView = () => {
-  return (
-    <>
-      <MapContent />
-    </>
-  );
+    return (
+        <>
+            <MapContent />
+        </>
+    );
 };
 export default MapPageView;

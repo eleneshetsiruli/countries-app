@@ -1,70 +1,68 @@
-import "./App.css";
-import { Navigate, Route, Routes } from "react-router-dom";
-import { DefaultLayout } from "./layout/default";
-import { lazy, Suspense } from "react";
-import CardView from "./pages/home/views/list";
-import LoadingPage from "./pages/loading";
-import SingleCardView from "./pages/singleCardPage/views";
+import './App.css';
+import { Navigate, Route, Routes } from 'react-router-dom';
+import { DefaultLayout } from './layout/default';
+import { lazy, Suspense } from 'react';
+import CardView from './pages/home/views/list';
+import LoadingPage from './pages/loading';
+import SingleCardView from './pages/singleCardPage/views';
 
-const LazyAboutView = lazy(() => import("./pages/about/views"));
-const LazyMapPageView = lazy(() => import("./pages/maps/views"));
-const LazyContactView = lazy(() => import("./pages/contact/views"));
-const LazyPageNotFoundView = lazy(() => import("./pages/404"));
+const LazyAboutView = lazy(() => import('./pages/about/views'));
+const LazyMapPageView = lazy(() => import('./pages/maps/views'));
+const LazyContactView = lazy(() => import('./pages/contact/views'));
+const LazyPageNotFoundView = lazy(() => import('./pages/404'));
 
 function App() {
-  return (
-    <>
-      <Routes>
-        <Route path="/:lang" element={<DefaultLayout />}>
-          <Route path="home" element={<CardView />} />
+    return (
+        <Routes>
+            <Route path="/:lang" element={<DefaultLayout />}>
+                <Route path="home" element={<CardView />} />
 
-          <Route
-            path="about"
-            element={
-              <Suspense fallback={<LoadingPage />}>
-                <LazyAboutView />
-              </Suspense>
-            }
-          />
-          <Route
-            path="maps"
-            element={
-              <Suspense fallback={<LoadingPage />}>
-                <LazyMapPageView />
-              </Suspense>
-            }
-          />
+                <Route
+                    path="about"
+                    element={
+                        <Suspense fallback={<LoadingPage />}>
+                            <LazyAboutView />
+                        </Suspense>
+                    }
+                />
+                <Route
+                    path="maps"
+                    element={
+                        <Suspense fallback={<LoadingPage />}>
+                            <LazyMapPageView />
+                        </Suspense>
+                    }
+                />
 
-          <Route
-            path="cards/:id"
-            element={
-              <Suspense fallback={<LoadingPage />}>
-                <SingleCardView />
-              </Suspense>
-            }
-          />
+                <Route
+                    path="cards/:id"
+                    element={
+                        <Suspense fallback={<LoadingPage />}>
+                            <SingleCardView />
+                        </Suspense>
+                    }
+                />
 
-          <Route
-            path="contacts"
-            element={
-              <Suspense fallback={<LoadingPage />}>
-                <LazyContactView />
-              </Suspense>
-            }
-          />
-        </Route>
-        <Route
-          path="*"
-          element={
-            <Suspense fallback={<LoadingPage />}>
-              <LazyPageNotFoundView />
-            </Suspense>
-          }
-        />
+                <Route
+                    path="contacts"
+                    element={
+                        <Suspense fallback={<LoadingPage />}>
+                            <LazyContactView />
+                        </Suspense>
+                    }
+                />
+            </Route>
+            <Route
+                path="*"
+                element={
+                    <Suspense fallback={<LoadingPage />}>
+                        <LazyPageNotFoundView />
+                    </Suspense>
+                }
+            />
 
-        <Route path="/" element={<Navigate to="/en/home" />} />
-      </Routes>
-    </>
-  );
+            <Route path="/" element={<Navigate to="/en/home" />} />
+        </Routes>
+    );
 }
 export default App;

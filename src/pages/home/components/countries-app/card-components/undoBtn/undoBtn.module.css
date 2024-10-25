@@ -1,9 +1,11 @@
 .undoBtn {
-  background-color: #0b6914;
-  color: #e9e2e2;
-  border: 1px solid #555;
-  padding: 8px 12px;
-  cursor: pointer;
-  transition: background-color 0s ease, color 0.3s ease;
-  position: absolute;
+    background-color: #0b6914;
+    color: #e9e2e2;
+    border: 1px solid #555;
+    padding: 8px 12px;
+    cursor: pointer;
+    transition:
+        background-color 0s ease,
+        color 0.3s ease;
+    position: absolute;
 }

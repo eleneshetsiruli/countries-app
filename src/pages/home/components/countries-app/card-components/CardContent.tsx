@@ -1,9 +1,10 @@
-import styles from "../CountriesCard.module.css";
+import React from 'react';
+import styles from '../CountriesCard.module.css';
 
 type CardContentdProps = {
-  children: React.ReactNode;
+    children: React.ReactNode;
 };
 
 export const CardContent = ({ children }: CardContentdProps) => {
-  return <div className={styles.cardContentBox}>{children}</div>;
+    return <div className={styles.cardContentBox}>{children}</div>;
 };

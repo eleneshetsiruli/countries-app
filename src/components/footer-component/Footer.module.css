@@ -1,37 +1,37 @@
 .footerContainer {
-  background-color: rgb(243, 241, 241);
-  display: flex;
-  justify-content: space-around;
+    background-color: rgb(243, 241, 241);
+    display: flex;
+    justify-content: space-around;
 }
 
 .footerContent {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
 .footerContent h4 {
-  color: rgb(90, 11, 11);
+    color: rgb(90, 11, 11);
 }
 
 .footerContent a {
-  text-decoration: none;
-  color: gray;
+    text-decoration: none;
+    color: gray;
 }
 
 .iconsBox {
-  display: flex;
-  gap: 10px;
+    display: flex;
+    gap: 10px;
 }
 
 /* media query */
 
 /* for mobile */
 @media only screen and (max-width: 767px) {
-  .footerContainer {
-    flex-direction: column;
-    height: 100vh;
-    margin-top: 55%;
-    align-items: center;
-  }
+    .footerContainer {
+        flex-direction: column;
+        height: 100vh;
+        margin-top: 55%;
+        align-items: center;
+    }
 }

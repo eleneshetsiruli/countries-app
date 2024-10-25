@@ -1,11 +1,11 @@
-import { AboutDescription } from "../components/description";
+import { AboutDescription } from '../components/description';
 
 export const AboutView = () => {
-  return (
-    <>
-      <AboutDescription />
-    </>
-  );
+    return (
+        <>
+            <AboutDescription />
+        </>
+    );
 };
 
 export default AboutView;

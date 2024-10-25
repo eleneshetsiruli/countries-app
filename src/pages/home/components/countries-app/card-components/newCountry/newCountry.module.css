@@ -1,38 +1,38 @@
 .countryForm {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  width: 150px;
-  margin-bottom: 150px;
-  align-self: center;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 150px;
+    margin-bottom: 150px;
+    align-self: center;
 }
 .countryForm input {
-  height: 50px;
-  border-radius: 5px;
-  padding-left: 10px;
-  font-style: italic;
-  border: 1px solid rgb(220, 212, 227);
-  width: 200px;
+    height: 50px;
+    border-radius: 5px;
+    padding-left: 10px;
+    font-style: italic;
+    border: 1px solid rgb(220, 212, 227);
+    width: 200px;
 }
 .countryForm button {
-  border-radius: 50px;
-  height: 40px;
-  background-color: rgb(150, 188, 150);
-  color: white;
+    border-radius: 50px;
+    height: 40px;
+    background-color: rgb(150, 188, 150);
+    color: white;
 }
 .countryForm button:hover {
-  background-color: green;
+    background-color: green;
 }
 
 .errorMessage {
-  color: red;
+    color: red;
 }
 
 .inputsBox {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
 }
 .fileInput {
-  border: none !important;
+    border: none !important;
 }
