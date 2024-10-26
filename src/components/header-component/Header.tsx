@@ -6,8 +6,6 @@ const handleActiveNav = ({ isActive }: NavLinkRenderProps) => {
     return isActive ? styles.activeNavItem : '';
 };
 const ela = '';
-const gio = '';
-
 export const Header = () => {
     const { lang } = useParams<string>();
 
