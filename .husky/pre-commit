@@ -1,6 +1,12 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
-
+echo "Running linting..."
 npm run lint
+if [ $? -ne 0 ]; then
+  echo "Linting failed, aborting commit."
+  exit 1
+fi
+
+echo "Running formatting..."
 npm run format
