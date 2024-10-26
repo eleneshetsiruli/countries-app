@@ -5,6 +5,7 @@ import { headerTranslation } from './translation';
 const handleActiveNav = ({ isActive }: NavLinkRenderProps) => {
     return isActive ? styles.activeNavItem : '';
 };
+const ela = '';
 
 export const Header = () => {
     const { lang } = useParams<string>();
