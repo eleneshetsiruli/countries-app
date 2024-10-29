@@ -2,6 +2,7 @@ import { useParams } from 'react-router-dom';
 import { CountriesCard } from '../../components/countries-app/CountriesCard';
 import { HeroSection } from '../../components/hero-component/HeroSection';
 import { translations } from '../../translations';
+import { OTPIndex } from '@/components/OTPInput';
 
 export const CardView = () => {
     const { lang } = useParams<string>();
@@ -11,6 +12,7 @@ export const CardView = () => {
     return (
         <>
             <HeroSection lang={currentLang} />
+            <OTPIndex quantity={4} />
             <CountriesCard />
         </>
     );

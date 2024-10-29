@@ -1,0 +1,24 @@
+.inputBox {
+    display: flex;
+    gap: 20px;
+    height: 50px;
+    margin: 50px;
+}
+.inputBox input {
+    width: 50px;
+    text-align: center;
+}
+button {
+    margin-left: 50px;
+    width: 100px;
+    height: 50px;
+    margin-top: 5px;
+    background-color: rgb(6, 69, 6);
+    color: white;
+    border-radius: 5px;
+}
+.error {
+    color: red;
+    margin-left: 50px;
+    font-size: 30px;
+}
