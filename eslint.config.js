@@ -20,7 +20,9 @@ export default [
                 browser: true,
                 document: true,
                 console: 'readonly',
+                node: true,
             },
+
             parser: typescriptParser,
             parserOptions: {
                 ecmaFeatures: {
@@ -35,18 +37,32 @@ export default [
             react: reactPlugin,
             '@typescript-eslint': typescriptPlugin,
         },
+
         rules: {
-            'no-unused-vars': ['off'],
-            'no-console': 'off',
+            'no-unused-vars': 'off',
+            'no-console': ['error', { allow: ['warn', 'error'] }],
             '@typescript-eslint/no-unused-vars': [
                 'warn',
                 { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
             ],
         },
+
         settings: {
             react: {
                 version: 'detect',
             },
+        },
+    },
+    {
+        files: ['**/*.js'],
+        languageOptions: {
+            globals: {
+                console: 'readonly',
+            },
+        },
+        rules: {
+            'no-console': ['warn', { allow: ['warn', 'error'] }],
+            'no-unused-vars': 'warn',
         },
     },
 ];

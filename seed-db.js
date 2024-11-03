@@ -2,13 +2,26 @@ import axios from 'axios';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { logger } from './src/Logger';
+import { Buffer } from 'buffer';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const dbPath = path.join(__dirname, 'db.json');
 
-const mapCountryData = (country) => ({
+const fetchImageAsBase64 = async (url) => {
+    try {
+        const response = await axios.get(url, { responseType: 'arraybuffer' });
+        const base64Flag = Buffer.from(response.data, 'binary').toString(
+            'base64',
+        );
+        return `data:image/png;base64,${base64Flag}`;
+    } catch (error) {
+        console.error('Error fetching flag image:', error);
+        return '';
+    }
+};
+
+const mapCountryData = async (country) => ({
     name: {
         en: country.name.common,
         ka: '',
@@ -19,7 +32,7 @@ const mapCountryData = (country) => ({
         ka: '',
     },
     rating: 0,
-    flag: country.flags.png,
+    flag: await fetchImageAsBase64(country.flags.png),
     id: country.cca3,
     deleted: false,
     originalIndex: country.cca3,
@@ -28,14 +41,12 @@ const mapCountryData = (country) => ({
 const fetchAndSeedData = async () => {
     try {
         const response = await axios.get('https://restcountries.com/v3.1/all');
-        const countries = response.data.map(mapCountryData);
+        const countries = await Promise.all(response.data.map(mapCountryData));
 
         const dbData = { country: countries };
         fs.writeFileSync(dbPath, JSON.stringify(dbData, null, 2));
-
-        logger.info('Database updated successfully');
     } catch (error) {
-        logger.error('Error fetching or writing data: ' + error);
+        console.error('Error fetching or writing data: ' + error);
     }
 };
 fetchAndSeedData();

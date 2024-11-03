@@ -14,23 +14,7 @@
       "flag": "https://flagcdn.com/w320/ch.png",
       "id": "CHE",
       "deleted": false,
-      "originalIndex": "CHE"
-    },
-    {
-      "name": {
-        "en": "Hungary",
-        "ka": ""
-      },
-      "population": "9749763",
-      "capital": {
-        "en": "Budapest",
-        "ka": ""
-      },
-      "rating": 0,
-      "flag": "https://flagcdn.com/w320/hu.png",
-      "id": "HUN",
-      "deleted": false,
-      "originalIndex": 2
+      "originalIndex": 0
     },
     {
       "name": {

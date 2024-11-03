@@ -25,5 +25,5 @@
             "#/*": ["./src/components/*"]
         }
     },
-    "include": ["src/**/*.ts", "src/**/*.tsx"]
+    "include": ["src/**/*.ts", "src/**/*.tsx", "src/Logger.js"]
 }
