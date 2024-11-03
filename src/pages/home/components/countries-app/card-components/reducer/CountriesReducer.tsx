@@ -3,7 +3,8 @@ type Action =
     | { type: 'ADD_COUNTRY'; payload: CountryData }
     | { type: 'REMOVE_COUNTRY'; payload: string }
     | { type: 'INCREASE_RATING'; payload: string }
-    | { type: 'UNDO_DELETE'; payload: string };
+    | { type: 'UNDO_DELETE'; payload: string }
+    | { type: 'UPDATE_COUNTRY'; payload: CountryData };
 
 interface CountryData {
     name: { en: string; ka: string };
@@ -41,18 +42,9 @@ export const countriesReducer = (
         }
 
         case 'REMOVE_COUNTRY': {
-            const updatedState = state.map((country) =>
-                country.id === action.payload
-                    ? { ...country, deleted: true }
-                    : country,
-            );
-
-            return updatedState.sort((a, b) => {
-                if (a.deleted && !b.deleted) return 1;
-                if (!a.deleted && b.deleted) return -1;
-                return 0;
-            });
+            return state.filter((country) => country.id !== action.payload);
         }
+
         case 'INCREASE_RATING':
             return state.map((country) =>
                 country.id === action.payload
@@ -60,32 +52,12 @@ export const countriesReducer = (
                     : country,
             );
 
-        case 'UNDO_DELETE': {
-            const updatedState = state.map((country) =>
-                country.id === action.payload
-                    ? { ...country, deleted: false }
+        case 'UPDATE_COUNTRY':
+            return state.map((country) =>
+                country.id === action.payload.id
+                    ? { ...country, ...action.payload }
                     : country,
             );
-
-            const restoredCards = updatedState.filter(
-                (country) => !country.deleted,
-            );
-            const deletedCards = updatedState.filter(
-                (country) => country.deleted,
-            );
-
-            const sortedRestoredCards = restoredCards.sort((a, b) => {
-                if (
-                    a.originalIndex !== undefined &&
-                    b.originalIndex !== undefined
-                ) {
-                    return a.originalIndex - b.originalIndex;
-                }
-                return 0;
-            });
-            return [...sortedRestoredCards, ...deletedCards];
-        }
-
         default:
             return state;
     }

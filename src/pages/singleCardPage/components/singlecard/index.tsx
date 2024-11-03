@@ -1,26 +1,53 @@
-import countriesData from '@/data/countries';
 import { useParams } from 'react-router-dom';
 import styles from './singlePage.module.css';
 import { CardDetails, CardTitle } from '@/data';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+
+interface countryfetchingDataProps {
+    name: {
+        en: string;
+        ka: string;
+    };
+    flag: string;
+    population: number;
+    capital: {
+        en: string;
+        ka: string;
+    };
+}
 
 export const SingleCardContent = () => {
-    const params = useParams();
-    const { id } = params;
-    const { lang } = useParams();
+    const [getData, setGetData] = useState<countryfetchingDataProps>();
+    const { id, lang } = useParams();
     const currentLang = lang === 'en' || lang === 'ka' ? lang : 'en';
-    const filteredData = countriesData.find((elem) => elem.id === id);
+
+    useEffect(() => {
+        axios
+            .get(`http://localhost:3000/country/${id}`)
+            .then((response) => {
+                setGetData(response.data);
+            })
+            .catch((error) => {
+                console.error('Error fetching data:', error);
+            });
+    }, []);
 
     return (
         <div className={styles.singleContainer}>
-            <CardTitle title={filteredData?.name[currentLang]} />
-            <img src={filteredData?.flag} alt="flag" />
+            <CardTitle
+                title={getData?.name?.[currentLang] || 'No name available'}
+            />
+            <img src={getData?.flag} alt="flag" />
             <CardDetails
                 label={'Population'}
-                content={filteredData?.population}
+                content={getData?.population || 'N/A'}
             />
             <CardDetails
                 label={'Capital'}
-                content={filteredData?.capital[currentLang]}
+                content={
+                    getData?.capital?.[currentLang] || 'No capital available'
+                }
             />
         </div>
     );

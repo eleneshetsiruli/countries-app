@@ -1,4 +1,5 @@
-.countryForm {
+.countryForm,
+.editForm {
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -6,7 +7,13 @@
     margin-bottom: 150px;
     align-self: center;
 }
-.countryForm input {
+
+.editForm {
+    width: 200px;
+}
+
+.countryForm input,
+.editForm input {
     height: 50px;
     border-radius: 5px;
     padding-left: 10px;
@@ -14,7 +21,8 @@
     border: 1px solid rgb(220, 212, 227);
     width: 200px;
 }
-.countryForm button {
+.countryForm button,
+.editForm button {
     border-radius: 50px;
     height: 40px;
     background-color: rgb(150, 188, 150);

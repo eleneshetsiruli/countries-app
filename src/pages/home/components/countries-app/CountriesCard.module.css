@@ -6,6 +6,11 @@
     flex-wrap: wrap;
 }
 
+.editedCountry {
+    display: flex;
+    flex-direction: column;
+}
+
 .singleCard,
 .delete {
     width: 300px;

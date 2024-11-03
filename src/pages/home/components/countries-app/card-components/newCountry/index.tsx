@@ -1,7 +1,9 @@
 import { useParams } from 'react-router-dom';
 import styles from './newCountry.module.css';
 import { cardTranslations } from '../country/translations';
-import React from 'react';
+import React, { useState } from 'react';
+import axios from 'axios';
+import { CountryData } from '../interfaces';
 
 interface NewCountryProps {
     handleSubmitNewCountry: (ev: React.FormEvent<HTMLFormElement>) => void;
@@ -28,6 +30,95 @@ interface NewCountryProps {
     newCountEng: boolean;
     newCountGeo: boolean;
 }
+
+interface EditCountryFormProps {
+    country: CountryData;
+    onSave: (updatedCountry: CountryData) => void;
+    onCancel: () => void;
+}
+
+const EditCountryForm: React.FC<EditCountryFormProps> = ({
+    country,
+    onSave,
+}) => {
+    const [name, setName] = useState(country.name);
+    const [population, setPopulation] = useState(country.population);
+    const [capital, setCapital] = useState(country.capital);
+    const [rating, setRating] = useState(country.rating);
+    const [flag, setFlag] = useState(country.flag);
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        const updatedCountry = {
+            ...country,
+            name,
+            population,
+            capital,
+            rating,
+            flag,
+        };
+
+        try {
+            await axios.put(
+                `http://localhost:3000/country/${country.id}`,
+                updatedCountry,
+            );
+            onSave(updatedCountry);
+        } catch (error) {
+            console.error('Error updating country:', error);
+        }
+    };
+
+    return (
+        <form className={styles.editForm} onSubmit={handleSubmit}>
+            <input
+                type="text"
+                value={name.en}
+                onChange={(e) => setName({ ...name, en: e.target.value })}
+                placeholder="Country Name (EN)"
+            />
+            <input
+                type="text"
+                value={name.ka}
+                onChange={(e) => setName({ ...name, ka: e.target.value })}
+                placeholder="Country Name (KA)"
+            />
+            <input
+                type="text"
+                value={population}
+                onChange={(e) => setPopulation(e.target.value)}
+                placeholder="Population"
+            />
+            <input
+                type="text"
+                value={capital.en}
+                onChange={(e) => setCapital({ ...capital, en: e.target.value })}
+                placeholder="Capital (EN)"
+            />
+            <input
+                type="text"
+                value={capital.ka}
+                onChange={(e) => setCapital({ ...capital, ka: e.target.value })}
+                placeholder="Capital (KA)"
+            />
+            <input
+                type="number"
+                value={rating}
+                onChange={(e) => setRating(Number(e.target.value))}
+                placeholder="Rating"
+            />
+            <input
+                type="text"
+                value={flag}
+                onChange={(e) => setFlag(e.target.value)}
+                placeholder="Flag URL"
+            />
+            <button type="submit">Save</button>
+        </form>
+    );
+};
+
+export default EditCountryForm;
 
 export const NewCountry = ({
     handleSubmitNewCountry,

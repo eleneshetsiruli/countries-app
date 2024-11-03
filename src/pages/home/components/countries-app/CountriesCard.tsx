@@ -1,5 +1,4 @@
-import React, { ChangeEvent, useReducer, useState } from 'react';
-import countriesData from '../../../../data/countries.ts';
+import React, { ChangeEvent, useEffect, useReducer, useState } from 'react';
 import styles from './CountriesCard.module.css';
 import { Action, CountryData } from './card-components/interfaces/index.tsx';
 import {
@@ -10,11 +9,13 @@ import {
 import { Country } from './card-components/country/index.tsx';
 import { useParams } from 'react-router-dom';
 import { cardTranslations } from './card-components/country/translations/index.tsx';
+import axios from 'axios';
 
 export const CountriesCard = () => {
     const [countriesStaticData, dispatch] = useReducer<
         React.Reducer<CountryData[], Action>
-    >(countriesReducer, countriesData);
+    >(countriesReducer, []);
+
     const [errorMessage, setErrorMessage] = useState({
         name: '',
         population: '',
@@ -134,8 +135,14 @@ export const CountriesCard = () => {
         dispatch({ type: 'SET_DATA', payload: finalSortedCards });
     }
 
-    const removeCountry = (id: string) => () => {
-        dispatch({ type: 'REMOVE_COUNTRY', payload: id });
+    const removeCountry = (id: string) => async () => {
+        try {
+            await axios.delete(`http://localhost:3000/country/${id}`);
+
+            dispatch({ type: 'REMOVE_COUNTRY', payload: id });
+        } catch (error) {
+            console.error('Error deleting country:', error);
+        }
     };
 
     const handleUndo = (id: string) => () => {
@@ -155,21 +162,28 @@ export const CountriesCard = () => {
             originalIndex: countriesStaticData.length,
         };
 
-        {
-            dispatch({ type: 'ADD_COUNTRY', payload: freshCountry });
-            setNewCountry({
-                name: { en: '', ka: '' },
-                population: '',
-                capital: { en: '', ka: '' },
-                flag: '',
-                id: Math.random().toString(36),
-                rating: 0,
-                deleted: false,
-                originalIndex: countriesStaticData.length - 1,
+        axios
+            .post('http://localhost:3000/country', freshCountry)
+            .then((response) => {
+                dispatch({ type: 'ADD_COUNTRY', payload: response.data });
+
+                setNewCountry({
+                    name: { en: '', ka: '' },
+                    population: '',
+                    capital: { en: '', ka: '' },
+                    flag: '',
+                    id: Math.random().toString(36),
+                    rating: 0,
+                    deleted: false,
+                    originalIndex: countriesStaticData.length,
+                });
+
+                setNewCountEng(true);
+                setNewCountGeo(false);
+            })
+            .catch((error) => {
+                console.error('Error adding country:', error);
             });
-        }
-        setNewCountEng(true);
-        setNewCountGeo(false);
     }
 
     function validateFields() {
@@ -219,49 +233,65 @@ export const CountriesCard = () => {
         setNewCountGeo(true);
     }
 
-    return (
-        <section className={styles.cardSection}>
-            <SortingOptions onChange={handleChangeOption} />
+    const fetchCountries = async () => {
+        try {
+            const response = await axios.get('http://localhost:3000/country');
+            dispatch({ type: 'SET_DATA', payload: response.data });
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    };
 
-            <div className={styles.container}>
-                {countriesStaticData?.map((element, i) => (
-                    <Country
-                        handleUpRating={handleUpRating}
-                        data={element}
-                        removeCountry={removeCountry}
-                        key={i}
-                        deletedBtn={element.deleted}
-                        handleUndo={handleUndo}
-                    />
-                ))}
-            </div>
-            <div className={styles.newCountryBox}>
-                <div className={styles.langBox}>
-                    <button
-                        className={`${newCountEng ? styles.transparant : ''}`}
-                        onClick={handleClickedEnglish}
-                    >
-                        {content.english}
-                    </button>
-                    <button
-                        className={`${newCountGeo ? styles.transparant : ''}`}
-                        onClick={handleClickGeorgian}
-                    >
-                        {content.georgian}
-                    </button>
+    useEffect(() => {
+        fetchCountries();
+    }, []);
+
+    return (
+        <>
+            <section className={styles.cardSection}>
+                <SortingOptions onChange={handleChangeOption} />
+
+                <div className={styles.container}>
+                    {countriesStaticData?.map((element, i) => (
+                        <Country
+                            handleUpRating={handleUpRating}
+                            data={element}
+                            removeCountry={removeCountry}
+                            key={i}
+                            deletedBtn={element.deleted}
+                            handleUndo={handleUndo}
+                            dispatch={dispatch}
+                        />
+                    ))}
                 </div>
-                <NewCountry
-                    setNewCountEng={setNewCountEng}
-                    setNewCountGeo={setNewCountGeo}
-                    newCountEng={newCountEng}
-                    newCountGeo={newCountGeo}
-                    handleChangeInput={handleChangeInput}
-                    handleSubmitNewCountry={handleSubmitNewCountry}
-                    value={newCountry}
-                    errorMessage={errorMessage}
-                    handleChangeFile={handleChangeFile}
-                />
-            </div>
-        </section>
+                <div className={styles.newCountryBox}>
+                    <div className={styles.langBox}>
+                        <button
+                            className={`${newCountEng ? styles.transparant : ''}`}
+                            onClick={handleClickedEnglish}
+                        >
+                            {content.english}
+                        </button>
+                        <button
+                            className={`${newCountGeo ? styles.transparant : ''}`}
+                            onClick={handleClickGeorgian}
+                        >
+                            {content.georgian}
+                        </button>
+                    </div>
+                    <NewCountry
+                        setNewCountEng={setNewCountEng}
+                        setNewCountGeo={setNewCountGeo}
+                        newCountEng={newCountEng}
+                        newCountGeo={newCountGeo}
+                        handleChangeInput={handleChangeInput}
+                        handleSubmitNewCountry={handleSubmitNewCountry}
+                        value={newCountry}
+                        errorMessage={errorMessage}
+                        handleChangeFile={handleChangeFile}
+                    />
+                </div>
+            </section>
+        </>
     );
 };

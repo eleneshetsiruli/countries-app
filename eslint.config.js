@@ -19,6 +19,7 @@ export default [
             globals: {
                 browser: true,
                 document: true,
+                console: 'readonly',
             },
             parser: typescriptParser,
             parserOptions: {
@@ -36,6 +37,7 @@ export default [
         },
         rules: {
             'no-unused-vars': ['off'],
+            'no-console': 'off',
             '@typescript-eslint/no-unused-vars': [
                 'warn',
                 { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
