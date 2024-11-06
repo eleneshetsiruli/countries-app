@@ -2,19 +2,30 @@ import { useParams } from 'react-router-dom';
 import styles from './singlePage.module.css';
 import { CardDetails, CardTitle } from '@/data';
 import { useEffect, useState } from 'react';
-import axios from 'axios';
+import { fetchCountryById } from '@/api/singleCard';
+
+// interface countryfetchingDataProps {
+//     name: {
+//         en: string;
+//         ka: string;
+//     };
+//     flag: string;
+//     population: number;
+//     capital: {
+//         en: string;
+//         ka: string;
+//     };
+// }
 
 interface countryfetchingDataProps {
-    name: {
-        en: string;
-        ka: string;
-    };
+    name: { en: string; ka: string };
+    population: string;
     flag: string;
-    population: number;
-    capital: {
-        en: string;
-        ka: string;
-    };
+    capital: { en: string; ka: string };
+    id: string;
+    rating: number;
+    deleted?: boolean;
+    originalIndex?: number;
 }
 
 export const SingleCardContent = () => {
@@ -23,15 +34,17 @@ export const SingleCardContent = () => {
     const currentLang = lang === 'en' || lang === 'ka' ? lang : 'en';
 
     useEffect(() => {
-        axios
-            .get(`http://localhost:3000/country/${id}`)
-            .then((response) => {
-                setGetData(response.data);
-            })
-            .catch((error) => {
+        const fetchData = async () => {
+            try {
+                const countryData = await fetchCountryById(id);
+                setGetData(countryData);
+            } catch (error) {
                 console.error('Error fetching data:', error);
-            });
-    }, []);
+            }
+        };
+
+        fetchData();
+    }, [id]);
 
     return (
         <div className={styles.singleContainer}>

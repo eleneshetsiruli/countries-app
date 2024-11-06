@@ -9,7 +9,9 @@ import {
 import { Country } from './card-components/country/index.tsx';
 import { useParams } from 'react-router-dom';
 import { cardTranslations } from './card-components/country/translations/index.tsx';
-import axios from 'axios';
+import { fetchCountries } from '@/api/countries/index.ts';
+import { deleteCountry } from '@/api/deleteCountry/index.tsx';
+import { addCountry } from '@/api/addCountry/index.tsx';
 
 export const CountriesCard = () => {
     const [countriesStaticData, dispatch] = useReducer<
@@ -137,7 +139,7 @@ export const CountriesCard = () => {
 
     const removeCountry = (id: string) => async () => {
         try {
-            await axios.delete(`http://localhost:3000/country/${id}`);
+            await deleteCountry(id);
 
             dispatch({ type: 'REMOVE_COUNTRY', payload: id });
         } catch (error) {
@@ -149,12 +151,15 @@ export const CountriesCard = () => {
         dispatch({ type: 'UNDO_DELETE', payload: id });
     };
 
-    function handleSubmitNewCountry(ev: React.FormEvent<HTMLFormElement>) {
+    const handleSubmitNewCountry = async (
+        ev: React.FormEvent<HTMLFormElement>,
+    ) => {
         ev.preventDefault();
 
         if (!validateFields()) {
             return;
         }
+
         const freshCountry = {
             ...newCountry,
             id: Math.random().toString(36),
@@ -162,48 +167,56 @@ export const CountriesCard = () => {
             originalIndex: countriesStaticData.length,
         };
 
-        axios
-            .post('http://localhost:3000/country', freshCountry)
-            .then((response) => {
-                dispatch({ type: 'ADD_COUNTRY', payload: response.data });
+        try {
+            const newAddedCountry = await addCountry(freshCountry);
 
-                setNewCountry({
-                    name: { en: '', ka: '' },
-                    population: '',
-                    capital: { en: '', ka: '' },
-                    flag: '',
-                    id: Math.random().toString(36),
-                    rating: 0,
-                    deleted: false,
-                    originalIndex: countriesStaticData.length,
-                });
+            dispatch({ type: 'ADD_COUNTRY', payload: newAddedCountry });
 
-                setNewCountEng(true);
-                setNewCountGeo(false);
-            })
-            .catch((error) => {
-                console.error('Error adding country:', error);
+            setNewCountry({
+                name: { en: '', ka: '' },
+                population: '',
+                capital: { en: '', ka: '' },
+                flag: '',
+                id: Math.random().toString(36),
+                rating: 0,
+                deleted: false,
+                originalIndex: countriesStaticData.length,
             });
-    }
+
+            setNewCountEng(true);
+            setNewCountGeo(false);
+        } catch (error) {
+            console.error('Error adding country:', error);
+        }
+    };
 
     function validateFields() {
-        const currentLang: keyof typeof cardTranslations =
-            lang === 'en' || lang === 'ka' ? lang : 'en';
-        const content = cardTranslations[currentLang];
-        const errors = { name: '', population: '', capital: '' };
-
         if (newCountry.name.en.length < 5 || newCountry.name.ka.length < 5) {
-            errors.name = content.errorName;
+            setErrorMessage((prev) => ({
+                ...prev,
+                name: 'Minimum 5 characters required',
+            }));
+            return false;
         }
-        if (!newCountry.population || isNaN(Number(newCountry.population))) {
-            errors.population = content.errorPop;
+        if (
+            !newCountry.population ||
+            isNaN(Number(newCountry.population)) ||
+            Number(newCountry.population) <= 0
+        ) {
+            setErrorMessage((prev) => ({
+                ...prev,
+                population: 'Please enter a valid positive number',
+            }));
+            return false;
         }
-        if (!newCountry.capital) {
-            errors.capital = content.errorMust;
+        if (!newCountry.capital.en || !newCountry.capital.ka) {
+            setErrorMessage((prev) => ({
+                ...prev,
+                capital: 'Both English and Georgian capital names are required',
+            }));
+            return false;
         }
-        setErrorMessage(errors);
-
-        return !errors.name && !errors.population && !errors.capital;
+        return true;
     }
 
     const handleChangeFile = (ev: React.ChangeEvent<HTMLInputElement>) => {
@@ -233,17 +246,8 @@ export const CountriesCard = () => {
         setNewCountGeo(true);
     }
 
-    const fetchCountries = async () => {
-        try {
-            const response = await axios.get('http://localhost:3000/country');
-            dispatch({ type: 'SET_DATA', payload: response.data });
-        } catch (error) {
-            console.error('Error fetching data:', error);
-        }
-    };
-
     useEffect(() => {
-        fetchCountries();
+        fetchCountries(dispatch);
     }, []);
 
     return (

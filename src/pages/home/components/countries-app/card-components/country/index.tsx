@@ -14,7 +14,7 @@ import { cardTranslations } from './translations';
 import React, { useState } from 'react';
 import { EditButton } from '../../EditButton';
 import EditCountryForm from '../newCountry';
-import axios from 'axios';
+import { handleEditCountry } from '@/api/editCountry';
 
 export const Country: React.FC<CountryProps> = ({
     data,
@@ -40,13 +40,10 @@ export const Country: React.FC<CountryProps> = ({
         null,
     );
 
-    const handleEditCountry = async (updatedCountry: CountryData) => {
+    const updateCountry = async (updatedCountry: CountryData) => {
         try {
-            await axios.put(
-                `http://localhost:3000/country/${updatedCountry.id}`,
-                updatedCountry,
-            );
-            dispatch({ type: 'UPDATE_COUNTRY', payload: updatedCountry });
+            const updated = await handleEditCountry(updatedCountry);
+            dispatch({ type: 'UPDATE_COUNTRY', payload: updated });
         } catch (error) {
             console.error('Error updating country:', error);
         }
@@ -58,7 +55,7 @@ export const Country: React.FC<CountryProps> = ({
                 <EditCountryForm
                     country={editingCountry}
                     onSave={(updatedCountry) => {
-                        handleEditCountry(updatedCountry);
+                        updateCountry(updatedCountry);
                         setEditingCountry(null);
                     }}
                     onCancel={() => setEditingCountry(null)}
