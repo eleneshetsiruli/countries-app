@@ -1,17 +1,19 @@
 import { useParams } from 'react-router-dom';
-import styles from '../CountriesCard.module.css';
 import { cardTranslations } from './country/translations';
+
 interface DeleteBtnProps {
-    removeCountry: () => void;
+    onClick: () => void;
+    disabled: boolean;
 }
 
-export const DeleteBtn = ({ removeCountry }: DeleteBtnProps) => {
+export const DeleteBtn = ({ onClick, disabled }: DeleteBtnProps) => {
     const { lang } = useParams<{ lang?: string }>();
     const currentLang: keyof typeof cardTranslations =
         lang === 'en' || lang === 'ka' ? lang : 'en';
     const content = cardTranslations[currentLang];
+
     return (
-        <button onClick={removeCountry} className={styles.deleteBtn}>
+        <button disabled={disabled} onClick={onClick}>
             {content.delete}
         </button>
     );

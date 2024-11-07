@@ -1,10 +1,12 @@
 type Action =
-    | { type: 'SET_DATA'; payload: CountryData[] }
-    | { type: 'ADD_COUNTRY'; payload: CountryData }
+    | { type: 'SET_DATA'; payload: CountryData[] | undefined }
+    | { type: 'ADD_COUNTRY'; payload: CountryData | undefined }
     | { type: 'REMOVE_COUNTRY'; payload: string }
     | { type: 'INCREASE_RATING'; payload: string }
     | { type: 'UNDO_DELETE'; payload: string }
-    | { type: 'UPDATE_COUNTRY'; payload: CountryData };
+    | { type: 'UPDATE_COUNTRY'; payload: CountryData }
+    | { type: 'SET_LOADING'; payload: boolean }
+    | { type: 'SET_ERROR'; payload: Error };
 
 interface CountryData {
     name: { en: string; ka: string };
@@ -23,16 +25,28 @@ export const countriesReducer = (
 ): CountryData[] => {
     switch (action.type) {
         case 'SET_DATA':
+            if (!action.payload) {
+                return state;
+            }
             return action.payload.map((country, index) => ({
                 ...country,
                 originalIndex: index,
             })) as CountryData[];
 
         case 'ADD_COUNTRY': {
-            const updatedStateWithNewCountry = [
-                ...state,
-                { ...action.payload, deleted: false },
-            ];
+            const newCountry: CountryData = {
+                ...action.payload,
+                name: action.payload?.name ?? { en: '', ka: '' },
+                population: action.payload?.population ?? '',
+                flag: action.payload?.flag ?? '',
+                capital: action.payload?.capital ?? { en: '', ka: '' },
+                deleted: false,
+                rating: action.payload?.rating ?? 0,
+                originalIndex: action.payload?.originalIndex ?? 0, //
+                id: action.payload?.id ?? '',
+            };
+
+            const updatedStateWithNewCountry = [...state, newCountry];
 
             return updatedStateWithNewCountry.sort((a, b) => {
                 if (a.deleted && !b.deleted) return 1;
@@ -58,6 +72,7 @@ export const countriesReducer = (
                     ? { ...country, ...action.payload }
                     : country,
             );
+
         default:
             return state;
     }

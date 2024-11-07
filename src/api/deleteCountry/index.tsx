@@ -1,19 +1,11 @@
-import { httpClient } from '../index';
+import { httpClient } from '..';
 
-interface DeleteCountryResponse {
-    message: string;
-}
-
-export const deleteCountry = async (
-    id: string,
-): Promise<DeleteCountryResponse> => {
+export const deleteCountry = async (id: string) => {
     try {
-        const response = await httpClient.delete<DeleteCountryResponse>(
-            `/country/${id}`,
-        );
+        const response = await httpClient.delete(`/country/${id}`);
         return response.data;
     } catch (error) {
         console.error('Error deleting country:', error);
-        throw error;
+        throw new Error('Failed to delete country');
     }
 };

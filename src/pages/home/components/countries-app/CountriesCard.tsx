@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useEffect, useReducer, useState } from 'react';
+import React, { ChangeEvent, useReducer, useState } from 'react';
 import styles from './CountriesCard.module.css';
 import { Action, CountryData } from './card-components/interfaces/index.tsx';
 import {
@@ -9,14 +9,37 @@ import {
 import { Country } from './card-components/country/index.tsx';
 import { useParams } from 'react-router-dom';
 import { cardTranslations } from './card-components/country/translations/index.tsx';
-import { fetchCountries } from '@/api/countries/index.ts';
-import { deleteCountry } from '@/api/deleteCountry/index.tsx';
 import { addCountry } from '@/api/addCountry/index.tsx';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { fetchCountries } from '@/api/countries/index.ts';
+import { queryClient } from '@/main.tsx';
+import { deleteCountry } from '@/api/deleteCountry/index.tsx';
 
 export const CountriesCard = () => {
     const [countriesStaticData, dispatch] = useReducer<
         React.Reducer<CountryData[], Action>
     >(countriesReducer, []);
+
+    const { mutate: deleteMutation, isPending } = useMutation({
+        mutationFn: (id: string) => deleteCountry(id),
+        onMutate: async (id) => {
+            const previousCountries = countriesStaticData;
+            dispatch({ type: 'REMOVE_COUNTRY', payload: id });
+
+            return { previousCountries };
+        },
+        onError: (error, _, context) => {
+            dispatch({ type: 'SET_DATA', payload: context?.previousCountries });
+            console.error('Error deleting country:', error);
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['countries'] });
+        },
+    });
+
+    const handleDelete = (id: string) => {
+        deleteMutation(id);
+    };
 
     const [errorMessage, setErrorMessage] = useState({
         name: '',
@@ -137,40 +160,18 @@ export const CountriesCard = () => {
         dispatch({ type: 'SET_DATA', payload: finalSortedCards });
     }
 
-    const removeCountry = (id: string) => async () => {
-        try {
-            await deleteCountry(id);
+    const { mutate } = useMutation({
+        mutationFn: (newCountry: CountryData) => addCountry(newCountry),
+        onMutate: async (newCountry) => {
+            const previousCountries = countriesStaticData;
+            dispatch({ type: 'ADD_COUNTRY', payload: newCountry });
 
-            dispatch({ type: 'REMOVE_COUNTRY', payload: id });
-        } catch (error) {
-            console.error('Error deleting country:', error);
-        }
-    };
-
-    const handleUndo = (id: string) => () => {
-        dispatch({ type: 'UNDO_DELETE', payload: id });
-    };
-
-    const handleSubmitNewCountry = async (
-        ev: React.FormEvent<HTMLFormElement>,
-    ) => {
-        ev.preventDefault();
-
-        if (!validateFields()) {
-            return;
-        }
-
-        const freshCountry = {
-            ...newCountry,
-            id: Math.random().toString(36),
-            deleted: false,
-            originalIndex: countriesStaticData.length,
-        };
-
-        try {
-            const newAddedCountry = await addCountry(freshCountry);
-
-            dispatch({ type: 'ADD_COUNTRY', payload: newAddedCountry });
+            return { previousCountries };
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey: ['countries'],
+            });
 
             setNewCountry({
                 name: { en: '', ka: '' },
@@ -182,12 +183,34 @@ export const CountriesCard = () => {
                 deleted: false,
                 originalIndex: countriesStaticData.length,
             });
-
             setNewCountEng(true);
             setNewCountGeo(false);
-        } catch (error) {
+        },
+        onError: (error, newCountry) => {
+            dispatch({
+                type: 'ADD_COUNTRY',
+                payload: newCountry,
+            });
             console.error('Error adding country:', error);
+        },
+    });
+
+    const handleSubmitNewCountry = async (
+        ev: React.FormEvent<HTMLFormElement>,
+    ) => {
+        ev.preventDefault();
+        if (!validateFields()) {
+            return;
         }
+
+        const freshCountry = {
+            ...newCountry,
+            id: Math.random().toString(36),
+            deleted: false,
+            originalIndex: countriesStaticData.length,
+        };
+
+        mutate(freshCountry);
     };
 
     function validateFields() {
@@ -246,25 +269,33 @@ export const CountriesCard = () => {
         setNewCountGeo(true);
     }
 
-    useEffect(() => {
-        fetchCountries(dispatch);
-    }, []);
+    const {
+        data,
+        isError: queryError,
+        isLoading: queryLoad,
+    } = useQuery({
+        queryKey: ['countries'],
+        queryFn: fetchCountries,
+        retry: 0,
+    });
 
     return (
         <>
+            {queryLoad ? 'Loading...' : null}
+            {queryError ? 'Error' : null}
+
             <section className={styles.cardSection}>
                 <SortingOptions onChange={handleChangeOption} />
 
                 <div className={styles.container}>
-                    {countriesStaticData?.map((element, i) => (
+                    {data?.map((element: CountryData, i: number) => (
                         <Country
                             handleUpRating={handleUpRating}
                             data={element}
-                            removeCountry={removeCountry}
                             key={i}
-                            deletedBtn={element.deleted}
-                            handleUndo={handleUndo}
                             dispatch={dispatch}
+                            handleDelete={handleDelete}
+                            disabled={isPending}
                         />
                     ))}
                 </div>

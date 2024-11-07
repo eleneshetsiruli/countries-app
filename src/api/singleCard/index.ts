@@ -1,14 +1,12 @@
-import { CountryData } from '@/pages/home/components/countries-app/card-components/interfaces';
 import { httpClient } from '..';
 
-export const fetchCountryById = async (
-    id: string | undefined,
-): Promise<CountryData> => {
+export const fetchCountryById = async (id: string | undefined) => {
     try {
-        const response = await httpClient.get<CountryData>(`/country/${id}`);
-        return response.data;
+        const response = await httpClient.get(`/country/${id}`);
+        const data = response.data;
+        return data;
     } catch (error) {
-        console.error('Error fetching country:', error);
-        throw error;
+        console.error('Error fetching country by ID:', error);
+        throw new Error('Failed to fetch country data');
     }
 };
