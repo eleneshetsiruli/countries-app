@@ -2,38 +2,6 @@
   "country": [
     {
       "name": {
-        "en": "Uganda",
-        "ka": ""
-      },
-      "population": "45741000",
-      "capital": {
-        "en": "Kampala",
-        "ka": ""
-      },
-      "rating": 0,
-      "flag": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAUAAAADVCAMAAAARktncAAAASFBMVEUAAADv7e2kpaDe19d+bgLqbQJtAQHZAAD83AT////Lu7qUlI8WFRSuEBBwb2xCQUCJgX4sLCtZV1TiNzeWSEbqb2/vlJTErzPWIp4QAAAFJElEQVR42u3dW3ObOhiF4aVPqWWdD8bO//+nvcBxgArsTjpj9ma9t+lNn5GQEIQAjDHGGGOMMcYYY4wxxhhjjDHGGGOMMcYYY4yxPfXBfhTO7EcRkIAEJCABGQEJSEACMgISkIAEZAQkIAEJyAhIQAISkBGQgAQkICMgAQlIQEZAAhKQgIyA/xjQsB9FwP8x4OV6vTl3u14vBPx7O2dnub0q7hHwclPWWu18EafVw1DdLgR8hU9ba631QzQf5/Pn53Qo6gsBX+OzKhpjPs7n8/n8OZvKFwJu8X0PN29MvAMOdseEuwK8TpzUYGL7+Dyfz4Mp8wXlSsB+txmTnAAgfHxEE/Vc8EbAXouNiwcABJyMWQ5B6wj4Z4tRpioAIIUQY1wCWk3AJ35WBwQglIamlz/bkyD2OX+t1RU6I0iD2F6OgOvrh1UuZSCgJslBdwH3spLsA/C6GH0t5xaA4CWh2ZWuBHzsn5fTM6XkYwBSQ9VrgPZCwHuqo1OMAbDlt4+FBPubwGODicgIYje6EnB1AFpVkSrSlp9VBFwdgLYglwC3CbiHIbgDwC6NR/Bp8wq4kyH4fsBbd5sMJKnIahtwB5tB7PIKqCqq+PAcUBHw0nNJQJKC54Dv3wtijzNYBwSR9Arg7fCAuj8Am0gB6lNAfXTAS/8KiCLiA4J3audz+N2A1/4SHIqINGTvyxPC68EBXXcPCHiRVJFE5Anh7eCAunsTguCltHEie++3JrIjYA8QxTcARbx34r33ona6irwbsGciAFKqAJIUZa2S4n0Rvcut9B4BNYBaASCLd+MRfykpp+7RwrEBu/chNn99Yjh4kfvk1S7FOOjd7WNwemuDXTlKuJdF/DgIXdESTYdweO//4M1fsa79laF9C3oRL1ZElzgM0Zi4PKMOh/4MeFg5ZPmaxBm1efHiWozRxGiMMX7+bw/+IfW17Z2MvqkBobZyGu2MMcbE2VqiDg64euRcAABFGgCENnwDzl/W0gcHXH/oIQFASmm8HuY2EUzdBeeYbTy2VC0gPJaImmJ3CMrBATefW6o0+ZeTMTi9CqaDA9bt074pTxvM11IyGbf16H/P5MmDy/sV0DnnW4rmtAQ8+hoClG1AjwAgj1g5DsspXA4PmLcBBU0e4zR9Aeo/b5uP2/aJvUOzHveXBEsZAQfFbfRLG5k7oMr3/aKocREp3MRMb4c7Q1BpP+Y8srWPJ8Q+zmewCvTrLSNpujcJKQUgaGutjAPQcwnZHoLj7W9utdYagNxaq8VaW+LyCsgB2LsbcUBAcMpapVQZ305Q1lo7xCGepktwol1vM12A9ECV7/djVJHhFCd+3ET394IpB/d4s9LNXjBysyN97gH7kzhJ/v7lLj0DnD0e5gSeND2m10pNPpQQ1t7Q8lSbtnawqurKe9KOZvO9jF4D7P9EcwfzomDuHng5+r1yU6yUUhmd94p4C/zCPZ32rdVaK2rNRa2eU7NJbeJUwtoEV9z/rV8IJ2f1WusGICcvWk9+6194+duqutlOLy/fTXWVRs/u6/T3FnC5rmjO3pcuheO6q9p89ClptHl5GPrF1FWeg+9vDVsqXpwTX1KjHmMr8UvQ/BA3AQlIQEZAAhKQgIyABCQgARkBCUhAAjICEpCABGQEJCABCcgISEACEpARkIAEJCAjIAF3BfiL/ai9/ZH6/1wEJCABCUhARkACEpCAjIAEJCABGQEJSEACMgISkIAEZAQkIAEJyAhIQAISkBGQgAQkICPgv+03kA96qovDgA0AAAAASUVORK5CYII=",
-      "id": "UGA",
-      "deleted": false,
-      "originalIndex": "UGA"
-    },
-    {
-      "name": {
-        "en": "Burundi",
-        "ka": ""
-      },
-      "population": "11890781",
-      "capital": {
-        "en": "Gitega",
-        "ka": ""
-      },
-      "rating": 0,
-      "flag": "data:image/png;base64,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",
-      "id": "BDI",
-      "deleted": false,
-      "originalIndex": "BDI"
-    },
-    {
-      "name": {
         "en": "South Africa",
         "ka": ""
       },
@@ -47,22 +15,6 @@
       "id": "ZAF",
       "deleted": false,
       "originalIndex": "ZAF"
-    },
-    {
-      "name": {
-        "en": "France",
-        "ka": ""
-      },
-      "population": "67391582",
-      "capital": {
-        "en": "Paris",
-        "ka": ""
-      },
-      "rating": 0,
-      "flag": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAUAAAADVBAMAAADUYjTdAAAAD1BMVEXtKTkAI5X///9Ua7jzcHtn+NxjAAAAqUlEQVR42u3OQQ0AMAgEMCxggUzB/IvDw4Vnq6DViT+BVxFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQcHD4ALSX/S4FIDVowAAAABJRU5ErkJggg==",
-      "id": "FRA",
-      "deleted": false,
-      "originalIndex": "FRA"
     },
     {
       "name": {
