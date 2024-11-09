@@ -1,5 +1,5 @@
 type CardImgProps = {
-    img: string;
+    img: string | undefined;
 };
 
 export const CardImg = ({ img }: CardImgProps) => {

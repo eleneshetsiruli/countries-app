@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useReducer, useState } from 'react';
+import React, { ChangeEvent, useReducer, useRef, useState } from 'react';
 import styles from './CountriesCard.module.css';
 import { Action, CountryData } from './card-components/interfaces/index.tsx';
 import {
@@ -14,6 +14,7 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { fetchCountries } from '@/api/countries/index.ts';
 import { queryClient } from '@/main.tsx';
 import { deleteCountry } from '@/api/deleteCountry/index.tsx';
+import { useVirtualizer } from '@tanstack/react-virtual';
 
 export const CountriesCard = () => {
     const [countriesStaticData, dispatch] = useReducer<
@@ -278,6 +279,17 @@ export const CountriesCard = () => {
         queryFn: fetchCountries,
         retry: 0,
     });
+    const countriesData = data ?? [];
+
+    const parentRef = useRef(null);
+    const rowVirtualizer = useVirtualizer({
+        count: countriesData.length,
+        getScrollElement: () => parentRef.current,
+        estimateSize: () => 300,
+        overscan: 30,
+    });
+
+    const virtualItems = rowVirtualizer.getVirtualItems();
 
     return (
         <>
@@ -287,18 +299,36 @@ export const CountriesCard = () => {
             <section className={styles.cardSection}>
                 <SortingOptions onChange={handleChangeOption} />
 
-                <div className={styles.container}>
-                    {data?.map((element: CountryData, i: number) => (
-                        <Country
-                            handleUpRating={handleUpRating}
-                            data={element}
-                            key={i}
-                            dispatch={dispatch}
-                            handleDelete={handleDelete}
-                            disabled={isPending}
-                        />
-                    ))}
+                <div ref={parentRef} className={styles.container}>
+                    <div
+                        className={styles.innerContainer}
+                        style={{
+                            height: 3800,
+                        }}
+                    >
+                        {virtualItems?.map((virtualRow) => {
+                            const element = data?.[virtualRow.index];
+
+                            return (
+                                <div
+                                    key={virtualRow.key}
+                                    className={styles.singleCardWrapper}
+                                >
+                                    {element && (
+                                        <Country
+                                            handleUpRating={handleUpRating}
+                                            data={element}
+                                            dispatch={dispatch}
+                                            handleDelete={handleDelete}
+                                            disabled={isPending}
+                                        />
+                                    )}
+                                </div>
+                            );
+                        })}
+                    </div>
                 </div>
+
                 <div className={styles.newCountryBox}>
                     <div className={styles.langBox}>
                         <button

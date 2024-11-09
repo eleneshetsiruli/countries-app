@@ -15,7 +15,8 @@ import React, { useState } from 'react';
 import { EditButton } from '../../EditButton';
 import EditCountryForm from '../newCountry';
 import { handleEditCountry } from '@/api/editCountry';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
+import { queryClient } from '@/main';
 
 export const Country: React.FC<CountryProps> = ({
     disabled,
@@ -24,7 +25,7 @@ export const Country: React.FC<CountryProps> = ({
     dispatch,
     handleDelete,
 }) => {
-    const formattedPopulation = data.population.replace(
+    const formattedPopulation = data?.population.replace(
         /\B(?=(\d{3})+(?!\d))/g,
         ' ',
     );
@@ -35,13 +36,11 @@ export const Country: React.FC<CountryProps> = ({
 
     const content = cardTranslations[currentLang];
 
-    const countryName = data.name[currentLang];
+    const countryName = data?.name[currentLang];
 
     const [editingCountry, setEditingCountry] = useState<CountryData | null>(
         null,
     );
-
-    const queryClient = useQueryClient();
 
     const { mutate } = useMutation({
         mutationFn: (updatedCountry: CountryData) =>
@@ -82,9 +81,9 @@ export const Country: React.FC<CountryProps> = ({
                 />
             ) : (
                 <SingleCard
-                    renderId={data.id}
+                    renderId={data?.id}
                     renderTitle={<CardTitle title={countryName} />}
-                    renderImg={<CardImg img={data.flag} />}
+                    renderImg={<CardImg img={data?.flag} />}
                 >
                     <CardContent>
                         <CardDetails
@@ -94,7 +93,7 @@ export const Country: React.FC<CountryProps> = ({
                         <div className={styles.ratingBox}>
                             <CardDetails
                                 label={content.Rating}
-                                content={data.rating}
+                                content={data?.rating}
                             />
                         </div>
                     </CardContent>
