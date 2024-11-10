@@ -6,7 +6,7 @@
 .container {
     overflow-y: auto;
     position: relative;
-    height: 500px;
+    height: 350px;
     display: block;
     flex-wrap: wrap;
     padding: 16px;
@@ -17,6 +17,20 @@
     transition: transform 0.1s ease;
     display: flex;
     justify-content: center;
+}
+
+.paginationBox {
+    display: flex;
+    width: 100%;
+    gap: 10px;
+    justify-content: center;
+}
+
+.paginationBox button {
+    height: 50px;
+    width: 60px;
+    border: 1px solid saddlebrown;
+    border-radius: 5px;
 }
 
 .singleCard,

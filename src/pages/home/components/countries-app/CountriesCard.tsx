@@ -36,7 +36,11 @@ export const CountriesCard = () => {
     const [newCountGeo, setNewCountGeo] = useState(false);
 
     const [searchParams, setSearchParams] = useSearchParams();
+
+    const [page, setPage] = useState<number>(1);
+    const [perPage] = useState(10);
     const [sortOrder, setSortOrder] = useState<string>('rating');
+
     const [newCountry, setNewCountry] = useState({
         name: { en: '', ka: '' },
         population: '',
@@ -258,10 +262,10 @@ export const CountriesCard = () => {
         isError: queryError,
         isLoading: queryLoad,
     } = useQuery({
-        queryKey: ['countries', sortOrder],
-        queryFn: () => fetchCountries(sortOrder),
+        queryKey: ['countries', sortOrder, page, perPage],
+        queryFn: () => fetchCountries(sortOrder, page, perPage),
         retry: 0,
-        enabled: !!sortOrder,
+        enabled: !!sortOrder && page > 0,
     });
 
     const countriesData = data ?? [];
@@ -285,6 +289,16 @@ export const CountriesCard = () => {
     const handleSortChange = (newSortValue: 'rating' | '-rating') => {
         setSearchParams({ sort: newSortValue });
         setSortOrder(newSortValue);
+    };
+
+    const handleNextPage = () => {
+        setPage((prevPage) => prevPage + 1);
+    };
+
+    const handlePrevPage = () => {
+        if (page > 1) {
+            setPage((prev) => prev - 1);
+        }
     };
 
     return (
@@ -317,6 +331,12 @@ export const CountriesCard = () => {
                             </div>
                         );
                     })}
+                </div>
+                <div className={styles.paginationBox}>
+                    <button disabled={page == 1} onClick={handlePrevPage}>
+                        prev
+                    </button>
+                    <button onClick={handleNextPage}>next</button>
                 </div>
 
                 <div className={styles.newCountryBox}>
