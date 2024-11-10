@@ -1,4 +1,10 @@
-import React, { ChangeEvent, useReducer, useRef, useState } from 'react';
+import React, {
+    ChangeEvent,
+    useEffect,
+    useReducer,
+    useRef,
+    useState,
+} from 'react';
 import styles from './CountriesCard.module.css';
 import { Action, CountryData } from './card-components/interfaces/index.tsx';
 import {
@@ -7,7 +13,7 @@ import {
     NewCountry,
 } from '../../../../data/index.ts';
 import { Country } from './card-components/country/index.tsx';
-import { useParams } from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router-dom';
 import { cardTranslations } from './card-components/country/translations/index.tsx';
 import { addCountry } from '@/api/addCountry/index.tsx';
 import { useMutation, useQuery } from '@tanstack/react-query';
@@ -20,7 +26,27 @@ export const CountriesCard = () => {
     const [countriesStaticData, dispatch] = useReducer<
         React.Reducer<CountryData[], Action>
     >(countriesReducer, []);
+    const [errorMessage, setErrorMessage] = useState({
+        name: '',
+        population: '',
+        capital: '',
+    });
 
+    const [newCountEng, setNewCountEng] = useState(true);
+    const [newCountGeo, setNewCountGeo] = useState(false);
+
+    const [searchParams, setSearchParams] = useSearchParams();
+    const [sortOrder, setSortOrder] = useState<string>('rating');
+    const [newCountry, setNewCountry] = useState({
+        name: { en: '', ka: '' },
+        population: '',
+        capital: { en: '', ka: '' },
+        flag: '',
+        id: Math.random().toString(36),
+        rating: 0,
+        deleted: false,
+        originalIndex: countriesStaticData.length - 1,
+    });
     const { mutate: deleteMutation, isPending } = useMutation({
         mutationFn: (id: string) => deleteCountry(id),
         onMutate: async (id) => {
@@ -41,25 +67,6 @@ export const CountriesCard = () => {
     const handleDelete = (id: string) => {
         deleteMutation(id);
     };
-
-    const [errorMessage, setErrorMessage] = useState({
-        name: '',
-        population: '',
-        capital: '',
-    });
-
-    const [newCountry, setNewCountry] = useState({
-        name: { en: '', ka: '' },
-        population: '',
-        capital: { en: '', ka: '' },
-        flag: '',
-        id: Math.random().toString(36),
-        rating: 0,
-        deleted: false,
-        originalIndex: countriesStaticData.length - 1,
-    });
-    const [newCountEng, setNewCountEng] = useState(true);
-    const [newCountGeo, setNewCountGeo] = useState(false);
 
     const { lang } = useParams<{ lang?: string }>();
     const currentLang: keyof typeof cardTranslations =
@@ -136,30 +143,6 @@ export const CountriesCard = () => {
     const handleUpRating = (id: string) => () => {
         dispatch({ type: 'INCREASE_RATING', payload: id });
     };
-
-    function handleChangeOption(ev: ChangeEvent<HTMLSelectElement>) {
-        const nonDeletedCards = countriesStaticData.filter(
-            (country) => !country.deleted,
-        );
-        const deletedCards = countriesStaticData.filter(
-            (country) => country.deleted,
-        );
-
-        const sortedNonDeletedCards: CountryData[] = nonDeletedCards.sort(
-            (a, b) => {
-                if (ev.target.value === 'hight') {
-                    return b.rating - a.rating;
-                } else if (ev.target.value === 'low') {
-                    return a.rating - b.rating;
-                }
-                return 0;
-            },
-        );
-
-        const finalSortedCards = [...sortedNonDeletedCards, ...deletedCards];
-
-        dispatch({ type: 'SET_DATA', payload: finalSortedCards });
-    }
 
     const { mutate } = useMutation({
         mutationFn: (newCountry: CountryData) => addCountry(newCountry),
@@ -275,10 +258,12 @@ export const CountriesCard = () => {
         isError: queryError,
         isLoading: queryLoad,
     } = useQuery({
-        queryKey: ['countries'],
-        queryFn: fetchCountries,
+        queryKey: ['countries', sortOrder],
+        queryFn: () => fetchCountries(sortOrder),
         retry: 0,
+        enabled: !!sortOrder,
     });
+
     const countriesData = data ?? [];
 
     const parentRef = useRef(null);
@@ -286,10 +271,21 @@ export const CountriesCard = () => {
         count: countriesData.length,
         getScrollElement: () => parentRef.current,
         estimateSize: () => 300,
-        overscan: 30,
+        overscan: 5,
     });
-
     const virtualItems = rowVirtualizer.getVirtualItems();
+
+    useEffect(() => {
+        const urlSort = searchParams.get('sort');
+        if (urlSort && urlSort !== sortOrder) {
+            setSortOrder(urlSort === 'rating' ? 'rating' : '-rating');
+        }
+    }, [searchParams]);
+
+    const handleSortChange = (newSortValue: 'rating' | '-rating') => {
+        setSearchParams({ sort: newSortValue });
+        setSortOrder(newSortValue);
+    };
 
     return (
         <>
@@ -297,36 +293,30 @@ export const CountriesCard = () => {
             {queryError ? 'Error' : null}
 
             <section className={styles.cardSection}>
-                <SortingOptions onChange={handleChangeOption} />
+                <SortingOptions onChange={handleSortChange} />
 
                 <div ref={parentRef} className={styles.container}>
-                    <div
-                        className={styles.innerContainer}
-                        style={{
-                            height: 3800,
-                        }}
-                    >
-                        {virtualItems?.map((virtualRow) => {
-                            const element = data?.[virtualRow.index];
+                    {virtualItems?.map((virtualItem) => {
+                        const element = countriesData?.[virtualItem.index];
 
-                            return (
-                                <div
-                                    key={virtualRow.key}
-                                    className={styles.singleCardWrapper}
-                                >
-                                    {element && (
-                                        <Country
-                                            handleUpRating={handleUpRating}
-                                            data={element}
-                                            dispatch={dispatch}
-                                            handleDelete={handleDelete}
-                                            disabled={isPending}
-                                        />
-                                    )}
-                                </div>
-                            );
-                        })}
-                    </div>
+                        return (
+                            <div
+                                className={styles.singleCardWrapper}
+                                style={{
+                                    transform: `translateY(${virtualItem.start}px)`,
+                                }}
+                                key={virtualItem.index}
+                            >
+                                <Country
+                                    handleUpRating={handleUpRating}
+                                    data={element}
+                                    dispatch={dispatch}
+                                    handleDelete={handleDelete}
+                                    disabled={isPending}
+                                />
+                            </div>
+                        );
+                    })}
                 </div>
 
                 <div className={styles.newCountryBox}>
