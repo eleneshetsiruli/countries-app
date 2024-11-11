@@ -7,9 +7,10 @@
     overflow-y: auto;
     position: relative;
     height: 350px;
-    display: block;
+    display: flex;
     flex-wrap: wrap;
     padding: 16px;
+    justify-content: center;
 }
 
 .singleCardWrapper {

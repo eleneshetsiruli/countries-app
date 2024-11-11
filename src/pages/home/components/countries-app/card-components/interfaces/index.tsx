@@ -18,6 +18,16 @@ export interface CountryProps {
     disabled: boolean;
 }
 
+export interface PaginatedResponse {
+    data: CountryData[];
+    first: number;
+    items: number;
+    last: number;
+    next: number | null;
+    pages: number;
+    prev: number | null;
+}
+
 export type Action =
     | { type: 'UNDO_DELETE'; payload: string }
     | { type: 'INCREASE_RATING'; payload: string }

@@ -1,5 +1,6 @@
 import React, {
     ChangeEvent,
+    useCallback,
     useEffect,
     useReducer,
     useRef,
@@ -16,7 +17,7 @@ import { Country } from './card-components/country/index.tsx';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { cardTranslations } from './card-components/country/translations/index.tsx';
 import { addCountry } from '@/api/addCountry/index.tsx';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useInfiniteQuery, useMutation } from '@tanstack/react-query';
 import { fetchCountries } from '@/api/countries/index.ts';
 import { queryClient } from '@/main.tsx';
 import { deleteCountry } from '@/api/deleteCountry/index.tsx';
@@ -37,9 +38,10 @@ export const CountriesCard = () => {
 
     const [searchParams, setSearchParams] = useSearchParams();
 
-    const [page, setPage] = useState<number>(1);
     const [perPage] = useState(10);
     const [sortOrder, setSortOrder] = useState<string>('rating');
+
+    const parentRef = useRef<HTMLDivElement | null>(null);
 
     const [newCountry, setNewCountry] = useState({
         name: { en: '', ka: '' },
@@ -257,27 +259,61 @@ export const CountriesCard = () => {
         setNewCountGeo(true);
     }
 
-    const {
-        data,
-        isError: queryError,
-        isLoading: queryLoad,
-    } = useQuery({
-        queryKey: ['countries', sortOrder, page, perPage],
-        queryFn: () => fetchCountries(sortOrder, page, perPage),
-        retry: 0,
-        enabled: !!sortOrder && page > 0,
-    });
+    interface PaginatedResponse {
+        data: any[]; // Array of countries or items
+        first: number; // Current page
+        items: number; // Total items
+        last: number; // Last page number
+        next: number | null; // Next page number (null if no more pages)
+        pages: number; // Total number of pages
+        prev: number | null; // Previous page number (null if on the first page)
+    }
 
-    const countriesData = data ?? [];
+    const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
+        useInfiniteQuery<PaginatedResponse, Error>({
+            queryKey: ['countries', sortOrder],
+            queryFn: async ({ pageParam = 1 }: any) => {
+                const response = await fetchCountries(
+                    { pageParam },
+                    sortOrder,
+                    perPage,
+                );
 
-    const parentRef = useRef(null);
+                return {
+                    data: response.data,
+                    first: response.first,
+                    items: response.items,
+                    last: response.last,
+                    next: response.next,
+                    pages: response.pages,
+                    prev: response.prev,
+                };
+            },
+            getNextPageParam: (lastPage) => {
+                if (lastPage?.next) {
+                    return lastPage?.next;
+                }
+            },
+
+            initialPageParam: 1,
+            enabled: true,
+        });
+
+    const countrie = data?.pages.flatMap((page) => page.data) ?? [];
+
     const rowVirtualizer = useVirtualizer({
-        count: countriesData.length,
+        count: countrie.length,
         getScrollElement: () => parentRef.current,
-        estimateSize: () => 300,
-        overscan: 5,
+        estimateSize: () => 320,
+        overscan: 35,
     });
+
     const virtualItems = rowVirtualizer.getVirtualItems();
+    useEffect(() => {
+        if (data) {
+            rowVirtualizer.measure();
+        }
+    }, [data]);
 
     useEffect(() => {
         const urlSort = searchParams.get('sort');
@@ -291,52 +327,69 @@ export const CountriesCard = () => {
         setSortOrder(newSortValue);
     };
 
-    const handleNextPage = () => {
-        setPage((prevPage) => prevPage + 1);
-    };
+    const handleScroll = useCallback(() => {
+        if (parentRef.current) {
+            const bottom =
+                parentRef.current.scrollHeight ===
+                parentRef.current.scrollTop + parentRef.current.clientHeight;
 
-    const handlePrevPage = () => {
-        if (page > 1) {
-            setPage((prev) => prev - 1);
+            if (bottom && hasNextPage && !isFetchingNextPage) {
+                fetchNextPage();
+            }
         }
-    };
+    }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
+
+    useEffect(() => {
+        const container = parentRef.current;
+
+        if (container) {
+            container.addEventListener('scroll', handleScroll);
+
+            return () => {
+                container.removeEventListener('scroll', handleScroll);
+            };
+        }
+    }, [handleScroll]);
 
     return (
         <>
-            {queryLoad ? 'Loading...' : null}
-            {queryError ? 'Error' : null}
-
             <section className={styles.cardSection}>
                 <SortingOptions onChange={handleSortChange} />
 
                 <div ref={parentRef} className={styles.container}>
-                    {virtualItems?.map((virtualItem) => {
-                        const element = countriesData?.[virtualItem.index];
-
-                        return (
-                            <div
-                                className={styles.singleCardWrapper}
-                                style={{
-                                    transform: `translateY(${virtualItem.start}px)`,
-                                }}
-                                key={virtualItem.index}
-                            >
-                                <Country
-                                    handleUpRating={handleUpRating}
-                                    data={element}
-                                    dispatch={dispatch}
-                                    handleDelete={handleDelete}
-                                    disabled={isPending}
-                                />
-                            </div>
-                        );
-                    })}
-                </div>
-                <div className={styles.paginationBox}>
-                    <button disabled={page == 1} onClick={handlePrevPage}>
-                        prev
-                    </button>
-                    <button onClick={handleNextPage}>next</button>
+                    <div
+                        style={{
+                            display: 'flex',
+                            flexWrap: 'wrap',
+                            gap: '50px',
+                            width: 700,
+                        }}
+                    >
+                        {virtualItems?.map((virtualItem) => {
+                            const element = countrie?.[virtualItem.index];
+                            if (!element) {
+                                return (
+                                    <div key={virtualItem.index}>
+                                        Loading...
+                                    </div>
+                                );
+                            }
+                            return (
+                                <div
+                                    key={element.id}
+                                    className={styles.singleCardWrapper}
+                                >
+                                    <Country
+                                        handleUpRating={handleUpRating}
+                                        data={element}
+                                        dispatch={dispatch}
+                                        handleDelete={handleDelete}
+                                        disabled={isPending}
+                                    />
+                                </div>
+                            );
+                        })}
+                    </div>
                 </div>
 
                 <div className={styles.newCountryBox}>

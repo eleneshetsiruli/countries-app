@@ -1,25 +1,17 @@
-import { CountryData } from '@/pages/home/components/countries-app/card-components/interfaces';
+import { PaginatedResponse } from '@/pages/home/components/countries-app/card-components/interfaces';
 import { httpClient } from '..';
-import { AxiosResponse } from 'axios';
-
-interface PaginatedCountriesResponse {
-    data: CountryData[];
-    totalCount: number;
-    pageCount: number;
-}
 
 export const fetchCountries = async (
+    { pageParam = 1 }: { pageParam?: number },
     sortOrder: string,
-    page: number,
     perPage: number,
-): Promise<CountryData[]> => {
+): Promise<PaginatedResponse> => {
     try {
-        const response: AxiosResponse<PaginatedCountriesResponse> =
-            await httpClient.get(
-                `/country?_sort=${sortOrder}&_page=${page}&_per_page=${perPage}`,
-            );
+        const response = await httpClient.get(
+            `/country?_sort=${sortOrder}&_page=${pageParam}&_per_page=${perPage}`,
+        );
 
-        return response.data.data;
+        return response.data;
     } catch (error) {
         console.error('Error fetching countries:', error);
         throw new Error('Failed to fetch countries');

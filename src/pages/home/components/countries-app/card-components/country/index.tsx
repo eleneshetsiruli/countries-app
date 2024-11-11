@@ -4,7 +4,6 @@ import {
     CardImg,
     CardTitle,
     SingleCard,
-    LikeButton,
     DeleteBtn,
 } from '../../././../../../../data/index';
 import { CountryData, CountryProps } from '../interfaces';
@@ -21,7 +20,6 @@ import { queryClient } from '@/main';
 export const Country: React.FC<CountryProps> = ({
     disabled,
     data,
-    handleUpRating,
     dispatch,
     handleDelete,
 }) => {
@@ -98,7 +96,6 @@ export const Country: React.FC<CountryProps> = ({
                         </div>
                     </CardContent>
                     <div className={styles.likeDeleteBox}>
-                        <LikeButton handleUpRating={handleUpRating(data.id)} />
                         <DeleteBtn
                             disabled={disabled}
                             onClick={() => handleDelete(data.id)}
