@@ -260,13 +260,13 @@ export const CountriesCard = () => {
     }
 
     interface PaginatedResponse {
-        data: any[]; // Array of countries or items
-        first: number; // Current page
-        items: number; // Total items
-        last: number; // Last page number
-        next: number | null; // Next page number (null if no more pages)
-        pages: number; // Total number of pages
-        prev: number | null; // Previous page number (null if on the first page)
+        data: any[];
+        first: number;
+        items: number;
+        last: number;
+        next: number | null;
+        pages: number;
+        prev: number | null;
     }
 
     const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
